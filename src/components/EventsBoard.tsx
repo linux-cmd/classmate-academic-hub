@@ -76,7 +76,7 @@ const EventsBoard = () => {
           <Calendar className="w-5 h-5 text-primary" />
           <span>Campus Events</span>
         </CardTitle>
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" onClick={() => window.location.hash = '#events'}>
           View All Events
         </Button>
       </CardHeader>

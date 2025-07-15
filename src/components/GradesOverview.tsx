@@ -67,7 +67,7 @@ const GradesOverview = () => {
           <TrendingUp className="w-5 h-5 text-primary" />
           <span>Academic Performance</span>
         </CardTitle>
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" onClick={() => window.location.hash = '#grades'}>
           View Details
         </Button>
       </CardHeader>

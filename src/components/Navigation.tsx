@@ -36,6 +36,7 @@ const Navigation = ({ currentPage = "dashboard", onPageChange }: NavigationProps
 
   const handleNavClick = (pageId: string) => {
     onPageChange?.(pageId);
+    window.location.hash = `#${pageId}`;
   };
 
   const handleAuthAction = () => {

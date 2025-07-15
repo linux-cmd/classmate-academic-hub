@@ -1,19 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import DashboardStats from "@/components/DashboardStats";
 import AssignmentTracker from "@/components/AssignmentTracker";
 import ScheduleOverview from "@/components/ScheduleOverview";
 import GradesOverview from "@/components/GradesOverview";
 import EventsBoard from "@/components/EventsBoard";
+import TutorialDialog from "@/components/TutorialDialog";
 import Assignments from "./Assignments";
 import Schedule from "./Schedule";
 import StudyGroups from "./StudyGroups";
+import Grades from "./Grades";
+import Events from "./Events";
 import heroImage from "@/assets/hero-study.jpg";
 import { useAuth } from "@/hooks/useData";
 
 const Index = () => {
   const [currentPage, setCurrentPage] = useState("dashboard");
+  const [showTutorial, setShowTutorial] = useState(false);
   const { user, isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    // Show tutorial for new users
+    const hasSeenTutorial = localStorage.getItem('classmate-tutorial-completed');
+    if (!hasSeenTutorial) {
+      setShowTutorial(true);
+    }
+  }, []);
 
   const renderPage = () => {
     switch (currentPage) {
@@ -24,9 +36,9 @@ const Index = () => {
       case "study-groups":
         return <StudyGroups />;
       case "grades":
+        return <Grades />;
       case "events":
-        // For now, redirect back to dashboard for these pages
-        return renderDashboard();
+        return <Events />;
       default:
         return renderDashboard();
     }
@@ -78,6 +90,7 @@ const Index = () => {
     <>
       <Navigation currentPage={currentPage} onPageChange={setCurrentPage} />
       {renderPage()}
+      <TutorialDialog open={showTutorial} onOpenChange={setShowTutorial} />
     </>
   );
 };

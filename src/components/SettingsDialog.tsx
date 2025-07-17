@@ -13,7 +13,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { useTheme } from "@/hooks/useTheme";
+import { Monitor, Moon, Sun } from "lucide-react";
 
 interface SettingsDialogProps {
   open: boolean;
@@ -22,6 +25,7 @@ interface SettingsDialogProps {
 
 const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
   const { profile, updateProfile } = useSupabaseAuth();
+  const { theme, setTheme, resolvedTheme } = useTheme();
   const [profileData, setProfileData] = useState({
     display_name: profile?.display_name || '',
     bio: profile?.bio || '',
@@ -34,6 +38,17 @@ const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
     events: true,
     studyGroups: false,
   });
+
+  const getThemeIcon = () => {
+    if (theme === 'system') return <Monitor className="w-4 h-4" />;
+    if (theme === 'dark') return <Moon className="w-4 h-4" />;
+    return <Sun className="w-4 h-4" />;
+  };
+
+  const getThemeLabel = () => {
+    if (theme === 'system') return `System (${resolvedTheme})`;
+    return theme.charAt(0).toUpperCase() + theme.slice(1);
+  };
 
   const handleProfileSave = () => {
     updateProfile(profileData);
@@ -187,12 +202,39 @@ const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
-                    <Label>Dark Mode</Label>
+                    <Label>Theme</Label>
                     <p className="text-sm text-muted-foreground">
-                      Switch between light and dark themes
+                      Choose your preferred color theme
                     </p>
                   </div>
-                  <Switch />
+                  <div className="flex items-center gap-2">
+                    {getThemeIcon()}
+                    <Select value={theme} onValueChange={(value: 'light' | 'dark' | 'system') => setTheme(value)}>
+                      <SelectTrigger className="w-32">
+                        <SelectValue placeholder="Theme" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="light">
+                          <div className="flex items-center gap-2">
+                            <Sun className="w-4 h-4" />
+                            Light
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="dark">
+                          <div className="flex items-center gap-2">
+                            <Moon className="w-4 h-4" />
+                            Dark
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="system">
+                          <div className="flex items-center gap-2">
+                            <Monitor className="w-4 h-4" />
+                            System
+                          </div>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
 
                 <div className="flex items-center justify-between">

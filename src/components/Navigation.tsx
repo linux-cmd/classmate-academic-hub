@@ -17,6 +17,7 @@ import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import AuthDialog from "./AuthDialog";
 import SettingsDialog from "./SettingsDialog";
 import NotificationsDialog from "./NotificationsDialog";
+import ThemeToggle from "./ThemeToggle";
 
 interface NavigationProps {
   currentPage?: string;
@@ -92,6 +93,8 @@ const Navigation = ({ currentPage = "dashboard", onPageChange }: NavigationProps
                   <span className="absolute -top-1 -right-1 w-3 h-3 bg-destructive rounded-full text-xs"></span>
                 </Button>
               )}
+              
+              <ThemeToggle />
               
               <Button 
                 variant="ghost" 

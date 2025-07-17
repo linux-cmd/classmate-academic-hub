@@ -1,7 +1,7 @@
 # Classmate Academic Hub
 
 [![Vite](https://img.shields.io/badge/Built%20with-Vite-blue)](https://vitejs.dev)
-[![Made by Abhijay S. Panwar](https://img.shields.io/badge/Made%20by-Abhijay%20S.%20Panwar-brightgreen)](https://github.com/linux-cmd)
+[![Made by Abhijay Panwar](https://img.shields.io/badge/Made%20by-Abhijay%20S.%20Panwar-brightgreen)](https://github.com/linux-cmd)
 
 > Classmate Academic Hub is a modern, full-stack academic productivity platform built for students to manage assignments, visualize grades, collaborate in study groups, and sync schedules—all in one intuitive interface.
 
@@ -62,7 +62,7 @@ cd classmate-academic-hub
 ### Install dependencies
 
 ```bash
-npm run dev
+npm install
 ```
 
 ### Start the development server
@@ -70,7 +70,7 @@ npm run dev
 ```bash
 npm run dev
 ```
-Visit [http://localhost:8000](http://localhost:8080) to access the app locally.
+Visit [http://localhost:8080](http://localhost:8080) to access the app locally.
 
 ## Planned Backend Schema (Supabase)
 
@@ -88,7 +88,7 @@ All tables will enforce Row Level Security (RLS) to ensure user-specific data is
 
 ## Author
 
-This project is built and maintained by [Abhijay S. Panwar](https://github.com/linux-cmd), a passionate 9th-grade student exploring AI, full-stack development, and academic empowerment tools.
+This project is built and maintained by [Abhijay Panwar](https://github.com/linux-cmd), a passionate 9th-grade student exploring AI, full-stack development, and academic empowerment tools.
 
 ---
 

@@ -1,7 +1,7 @@
 # Classmate Academic Hub
 
 [![Vite](https://img.shields.io/badge/Built%20with-Vite-blue)](https://vitejs.dev)
-[![Made by Abhijay Panwar](https://img.shields.io/badge/Made%20by-Abhijay%20S.%20Panwar-brightgreen)](https://github.com/linux-cmd)
+[![Made by Abhijay Panwar](https://img.shields.io/badge/Made%20by-Abhijay%20Panwar-brightgreen)](https://github.com/linux-cmd)
 
 > Classmate Academic Hub is a modern, full-stack academic productivity platform built for students to manage assignments, visualize grades, collaborate in study groups, and sync schedules—all in one intuitive interface.
 

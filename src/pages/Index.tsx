@@ -12,12 +12,12 @@ import StudyGroups from "./StudyGroups";
 import Grades from "./Grades";
 import Events from "./Events";
 import heroImage from "@/assets/hero-study.jpg";
-import { useAuth } from "@/hooks/useData";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 
 const Index = () => {
   const [currentPage, setCurrentPage] = useState("dashboard");
   const [showTutorial, setShowTutorial] = useState(false);
-  const { user, isAuthenticated } = useAuth();
+  const { user, profile, isAuthenticated } = useSupabaseAuth();
 
   useEffect(() => {
     // Show tutorial for new users
@@ -56,7 +56,7 @@ const Index = () => {
           <div className="relative container mx-auto px-4 h-full flex items-center">
             <div className="text-white">
               <h1 className="text-2xl font-bold mb-2">
-                Welcome back, {isAuthenticated ? user?.name || "Student" : "Guest"}!
+                Welcome back, {isAuthenticated ? profile?.display_name || user?.email?.split('@')[0] || "Student" : "Guest"}!
               </h1>
               <p className="text-white/90">
                 {isAuthenticated 

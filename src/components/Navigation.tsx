@@ -13,8 +13,10 @@ import {
   LogIn,
   LogOut
 } from "lucide-react";
-import { useAuth } from "@/hooks/useData";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import AuthDialog from "./AuthDialog";
+import SettingsDialog from "./SettingsDialog";
+import NotificationsDialog from "./NotificationsDialog";
 
 interface NavigationProps {
   currentPage?: string;
@@ -22,8 +24,10 @@ interface NavigationProps {
 }
 
 const Navigation = ({ currentPage = "dashboard", onPageChange }: NavigationProps) => {
-  const { user, isAuthenticated, login, logout } = useAuth();
+  const { user, profile, isAuthenticated, signIn, signOut, signUp } = useSupabaseAuth();
   const [showAuthDialog, setShowAuthDialog] = useState(false);
+  const [showSettingsDialog, setShowSettingsDialog] = useState(false);
+  const [showNotificationsDialog, setShowNotificationsDialog] = useState(false);
   
   const navItems = [
     { id: "dashboard", icon: Home, label: "Dashboard", active: currentPage === "dashboard" },
@@ -41,7 +45,7 @@ const Navigation = ({ currentPage = "dashboard", onPageChange }: NavigationProps
 
   const handleAuthAction = () => {
     if (isAuthenticated) {
-      logout();
+      signOut();
     } else {
       setShowAuthDialog(true);
     }
@@ -78,22 +82,31 @@ const Navigation = ({ currentPage = "dashboard", onPageChange }: NavigationProps
             {/* Right Side */}
             <div className="flex items-center space-x-3">
               {isAuthenticated && (
-                <Button variant="ghost" size="icon" className="relative">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="relative"
+                  onClick={() => setShowNotificationsDialog(true)}
+                >
                   <Bell className="w-5 h-5" />
                   <span className="absolute -top-1 -right-1 w-3 h-3 bg-destructive rounded-full text-xs"></span>
                 </Button>
               )}
               
-              <Button variant="ghost" size="icon">
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => setShowSettingsDialog(true)}
+              >
                 <Settings className="w-5 h-5" />
               </Button>
 
               {isAuthenticated ? (
                 <div className="flex items-center space-x-2">
                   <Avatar className="w-8 h-8">
-                    <AvatarImage src={user?.avatar} />
+                    <AvatarImage src={profile?.avatar_url || undefined} />
                     <AvatarFallback className="bg-gradient-primary text-primary-foreground">
-                      {user?.initials || "U"}
+                      {profile?.display_name?.substring(0, 2).toUpperCase() || user?.email?.substring(0, 2).toUpperCase() || "U"}
                     </AvatarFallback>
                   </Avatar>
                   <Button variant="ghost" size="sm" onClick={handleAuthAction}>
@@ -115,7 +128,18 @@ const Navigation = ({ currentPage = "dashboard", onPageChange }: NavigationProps
       <AuthDialog
         open={showAuthDialog}
         onOpenChange={setShowAuthDialog}
-        onLogin={login}
+        onLogin={signIn}
+        onSignUp={signUp}
+      />
+      
+      <SettingsDialog
+        open={showSettingsDialog}
+        onOpenChange={setShowSettingsDialog}
+      />
+      
+      <NotificationsDialog
+        open={showNotificationsDialog}
+        onOpenChange={setShowNotificationsDialog}
       />
     </>
   );

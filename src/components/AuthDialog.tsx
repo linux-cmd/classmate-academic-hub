@@ -10,9 +10,10 @@ interface AuthDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onLogin: (email: string, password: string) => Promise<any>;
+  onSignUp?: (email: string, password: string, name?: string) => Promise<any>;
 }
 
-const AuthDialog = ({ open, onOpenChange, onLogin }: AuthDialogProps) => {
+const AuthDialog = ({ open, onOpenChange, onLogin, onSignUp }: AuthDialogProps) => {
   const [loginData, setLoginData] = useState({ email: '', password: '' });
   const [signupData, setSignupData] = useState({ 
     name: '', 
@@ -60,19 +61,14 @@ const AuthDialog = ({ open, onOpenChange, onLogin }: AuthDialogProps) => {
     setIsLoading(true);
     
     try {
-      // For demo purposes, treat signup like login
-      await onLogin(signupData.email, signupData.password);
-      toast({
-        title: "Account created!",
-        description: "Welcome to ClassMate!",
-      });
+      if (onSignUp) {
+        await onSignUp(signupData.email, signupData.password, signupData.name);
+      } else {
+        await onLogin(signupData.email, signupData.password);
+      }
       onOpenChange(false);
     } catch (error) {
-      toast({
-        title: "Signup failed",
-        description: "Please try again later.",
-        variant: "destructive",
-      });
+      // Error handling is done in the auth hook
     } finally {
       setIsLoading(false);
     }
@@ -190,8 +186,7 @@ const AuthDialog = ({ open, onOpenChange, onLogin }: AuthDialogProps) => {
 
         <div className="mt-4 p-3 bg-muted rounded-lg">
           <p className="text-sm text-muted-foreground">
-            <strong>Demo Mode:</strong> This is frontend-only authentication. 
-            For production use, connect to Supabase for secure backend authentication.
+            <strong>Supabase Authentication:</strong> Secure backend authentication with user profiles and data persistence.
           </p>
         </div>
       </DialogContent>

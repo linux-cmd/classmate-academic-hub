@@ -14,6 +14,126 @@ export type Database = {
   }
   public: {
     Tables: {
+      assignments: {
+        Row: {
+          created_at: string
+          description: string | null
+          due_date: string
+          id: string
+          priority: string | null
+          status: string | null
+          subject: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          due_date: string
+          id?: string
+          priority?: string | null
+          status?: string | null
+          subject?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          due_date?: string
+          id?: string
+          priority?: string | null
+          status?: string | null
+          subject?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      events: {
+        Row: {
+          created_at: string
+          description: string | null
+          end_time: string | null
+          event_type: string | null
+          id: string
+          location: string | null
+          start_time: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          end_time?: string | null
+          event_type?: string | null
+          id?: string
+          location?: string | null
+          start_time: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          end_time?: string | null
+          event_type?: string | null
+          id?: string
+          location?: string | null
+          start_time?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      grades: {
+        Row: {
+          assignment_name: string
+          created_at: string
+          date_graded: string
+          grade: number
+          id: string
+          max_grade: number
+          semester: string | null
+          subject: string
+          updated_at: string
+          user_id: string
+          weight: number | null
+        }
+        Insert: {
+          assignment_name: string
+          created_at?: string
+          date_graded?: string
+          grade: number
+          id?: string
+          max_grade?: number
+          semester?: string | null
+          subject: string
+          updated_at?: string
+          user_id: string
+          weight?: number | null
+        }
+        Update: {
+          assignment_name?: string
+          created_at?: string
+          date_graded?: string
+          grade?: number
+          id?: string
+          max_grade?: number
+          semester?: string | null
+          subject?: string
+          updated_at?: string
+          user_id?: string
+          weight?: number | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null

@@ -1,41 +1,63 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckSquare, Clock, TrendingUp, CalendarDays } from "lucide-react";
+import { useUserData } from "@/hooks/useUserData";
 
 const DashboardStats = () => {
-  const stats = [
+  const { stats, loading } = useUserData();
+
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Card key={i} className="shadow-card animate-pulse">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <div className="h-4 bg-muted rounded w-20"></div>
+              <div className="h-4 w-4 bg-muted rounded"></div>
+            </CardHeader>
+            <CardContent>
+              <div className="h-8 bg-muted rounded w-12 mb-2"></div>
+              <div className="h-3 bg-muted rounded w-24"></div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
+  }
+
+  const statsData = [
     {
-      title: "Assignments Due",
-      value: "8",
-      subtitle: "This week",
+      title: "Pending Assignments",
+      value: stats.pendingAssignments.toString(),
+      subtitle: stats.totalAssignments === 0 ? "No assignments yet" : `${stats.totalAssignments} total`,
       icon: CheckSquare,
-      color: "text-warning"
+      color: stats.pendingAssignments > 5 ? "text-warning" : "text-success"
     },
     {
       title: "Upcoming Events",
-      value: "12",
+      value: stats.upcomingEvents.toString(),
       subtitle: "Next 7 days",
       icon: CalendarDays,
       color: "text-info"
     },
     {
-      title: "Study Hours",
-      value: "24h",
-      subtitle: "This week",
+      title: "Completed Tasks",
+      value: stats.completedAssignments.toString(),
+      subtitle: stats.totalAssignments > 0 ? `${Math.round((stats.completedAssignments / stats.totalAssignments) * 100)}% complete` : "Start your first task",
       icon: Clock,
       color: "text-success"
     },
     {
-      title: "GPA Trend",
-      value: "3.7",
-      subtitle: "+0.2 from last sem",
+      title: "Average Grade",
+      value: stats.averageGrade > 0 ? `${stats.averageGrade.toFixed(1)}%` : "N/A",
+      subtitle: stats.averageGrade > 0 ? (stats.averageGrade >= 85 ? "Excellent!" : "Keep it up!") : "Add your first grade",
       icon: TrendingUp,
-      color: "text-primary"
+      color: stats.averageGrade >= 85 ? "text-success" : stats.averageGrade >= 70 ? "text-primary" : "text-warning"
     }
   ];
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-      {stats.map((stat) => (
+      {statsData.map((stat) => (
         <Card key={stat.title} className="shadow-card">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">

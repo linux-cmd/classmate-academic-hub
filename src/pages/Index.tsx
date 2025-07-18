@@ -11,6 +11,7 @@ import Schedule from "./Schedule";
 import StudyGroups from "./StudyGroups";
 import Grades from "./Grades";
 import Events from "./Events";
+import Landing from "./Landing";
 import heroImage from "@/assets/hero-study.jpg";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 
@@ -96,6 +97,11 @@ const Index = () => {
         </div>
       </div>
     );
+  }
+
+  // Show landing page if not authenticated
+  if (!isAuthenticated) {
+    return <Landing />;
   }
 
   return (

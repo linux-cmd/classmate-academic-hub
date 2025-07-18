@@ -25,7 +25,7 @@ interface NavigationProps {
 }
 
 const Navigation = ({ currentPage = "dashboard", onPageChange }: NavigationProps) => {
-  const { user, profile, isAuthenticated, signIn, signOut, signUp } = useSupabaseAuth();
+  const { user, profile, isAuthenticated, signIn, signOut, signUp, signInWithGoogle } = useSupabaseAuth();
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
   const [showNotificationsDialog, setShowNotificationsDialog] = useState(false);
@@ -133,6 +133,7 @@ const Navigation = ({ currentPage = "dashboard", onPageChange }: NavigationProps
         onOpenChange={setShowAuthDialog}
         onLogin={signIn}
         onSignUp={signUp}
+        onGoogleSignIn={signInWithGoogle}
       />
       
       <SettingsDialog

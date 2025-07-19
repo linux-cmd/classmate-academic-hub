@@ -1,12 +1,57 @@
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Calendar, Clock, CheckSquare } from "lucide-react";
-import { useAssignments } from "@/hooks/useData";
+import { Button } from "@/components/ui/button";
+import { CheckSquare, Plus, Clock, Calendar } from "lucide-react";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import AddAssignmentDialog from "./AddAssignmentDialog";
 
+interface Assignment {
+  id: string;
+  title: string;
+  description: string | null;
+  subject: string | null;
+  due_date: string;
+  priority: string | null;
+  status: string | null;
+  user_id: string;
+}
+
 const AssignmentTracker = () => {
-  const { assignments, addAssignment, updateAssignment } = useAssignments();
+  const { user } = useSupabaseAuth();
+  const { toast } = useToast();
+  const [assignments, setAssignments] = useState<Assignment[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchAssignments = async () => {
+    if (!user) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from('assignments')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('due_date', { ascending: true })
+        .limit(5);
+
+      if (error) throw error;
+      setAssignments(data || []);
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Failed to fetch assignments",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAssignments();
+  }, [user]);
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
@@ -29,74 +74,96 @@ const AssignmentTracker = () => {
     return `${diffDays} days left`;
   };
 
-  const handleToggleComplete = (id: string, completed: boolean) => {
-    updateAssignment(id, { completed: !completed });
+  const toggleAssignment = async (id: string, currentStatus: string | null) => {
+    try {
+      const newStatus = currentStatus === 'completed' ? 'pending' : 'completed';
+      const { error } = await supabase
+        .from('assignments')
+        .update({ status: newStatus })
+        .eq('id', id);
+
+      if (error) throw error;
+      
+      await fetchAssignments();
+      toast({
+        title: "Assignment Updated",
+        description: `Assignment marked as ${newStatus}`,
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
   };
+
+  if (loading) {
+    return (
+      <Card className="shadow-card">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-xl font-semibold">Assignments</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="animate-pulse">
+                <div className="h-4 bg-muted rounded w-3/4 mb-2"></div>
+                <div className="h-3 bg-muted rounded w-1/2"></div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="shadow-card">
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="flex items-center space-x-2">
-          <CheckSquare className="w-5 h-5 text-primary" />
-          <span>Assignment Tracker</span>
-        </CardTitle>
-        <AddAssignmentDialog onAddAssignment={addAssignment} />
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-xl font-semibold">Assignments</CardTitle>
+        <AddAssignmentDialog onAddAssignment={fetchAssignments} />
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent>
         {assignments.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
-            <CheckSquare className="w-12 h-12 mx-auto mb-4 opacity-50" />
-            <p>No assignments yet. Click "Add Assignment" to get started!</p>
+          <div className="text-center py-8">
+            <CheckSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <p className="text-muted-foreground mb-4">No assignments yet</p>
           </div>
         ) : (
-          assignments.map((assignment) => (
-            <div
-              key={assignment.id}
-              className={`flex items-center space-x-4 p-3 rounded-lg border transition-colors ${
-                assignment.completed 
-                  ? 'bg-muted/50 opacity-75' 
-                  : 'hover:bg-muted/20'
-              }`}
-            >
-              <Checkbox 
-                checked={assignment.completed}
-                onCheckedChange={() => handleToggleComplete(assignment.id, assignment.completed)}
-                className="shrink-0"
-              />
-              
-              <div className="flex-1 min-w-0">
-                <h4 className={`font-medium truncate ${
-                  assignment.completed ? 'line-through text-muted-foreground' : ''
-                }`}>
-                  {assignment.title}
-                </h4>
-                <p className="text-sm text-muted-foreground">{assignment.course}</p>
-                {assignment.description && (
-                  <p className="text-xs text-muted-foreground mt-1 truncate">
-                    {assignment.description}
-                  </p>
-                )}
-              </div>
-
-              <div className="flex items-center space-x-2 shrink-0">
-                <Badge variant={getPriorityColor(assignment.priority) as any}>
-                  {assignment.priority}
-                </Badge>
-                
-                <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                  <Calendar className="w-3 h-3" />
-                  <span>{new Date(assignment.dueDate).toLocaleDateString()}</span>
+          <div className="space-y-3">
+            {assignments.map((assignment) => (
+              <div key={assignment.id} className="flex items-center justify-between p-3 rounded-lg border bg-card/50">
+                <div className="flex items-center space-x-3">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 w-6 p-0"
+                    onClick={() => toggleAssignment(assignment.id, assignment.status)}
+                  >
+                    <CheckSquare 
+                      className={`h-4 w-4 ${assignment.status === 'completed' ? 'text-success' : 'text-muted-foreground'}`} 
+                    />
+                  </Button>
+                  <div>
+                    <p className={`font-medium ${assignment.status === 'completed' ? 'line-through text-muted-foreground' : ''}`}>
+                      {assignment.title}
+                    </p>
+                    <p className="text-sm text-muted-foreground">{assignment.subject || 'No subject'}</p>
+                  </div>
                 </div>
-                
-                <div className="flex items-center space-x-1 text-sm">
-                  <Clock className="w-3 h-3" />
-                  <span className={assignment.completed ? 'text-success' : 'text-warning'}>
-                    {assignment.completed ? 'Completed' : formatTimeLeft(assignment.dueDate)}
-                  </span>
+                <div className="flex items-center space-x-2">
+                  <Badge variant={getPriorityColor(assignment.priority || 'medium') as any} className="text-xs">
+                    {assignment.priority || 'medium'}
+                  </Badge>
+                  <div className="flex items-center text-xs text-muted-foreground">
+                    <Calendar className="h-3 w-3 mr-1" />
+                    {formatTimeLeft(assignment.due_date)}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
+            ))}
+          </div>
         )}
       </CardContent>
     </Card>

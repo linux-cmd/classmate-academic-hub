@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import AuthDialog from "@/components/AuthDialog";
-import heroImage from "@/assets/hero-study.jpg";
+import heroImage from "@/assets/hero-study-professional.jpg";
 
 const Landing = () => {
   const { isAuthenticated, signIn, signUp, signInWithGoogle } = useSupabaseAuth();
@@ -96,60 +96,73 @@ const Landing = () => {
   return (
     <div className="min-h-screen bg-gradient-subtle">
       {/* Header */}
-      <header className="border-b bg-card/80 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-4">
+      <header className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
                 <BookOpen className="w-5 h-5 text-primary-foreground" />
               </div>
-              <h1 className="text-xl font-bold text-foreground">ClassMate</h1>
+              <h1 className="text-xl font-semibold tracking-tight">ClassMate</h1>
             </div>
-            <Button onClick={() => setShowAuthDialog(true)}>
-              Get Started Free
+            <Button 
+              onClick={() => setShowAuthDialog(true)}
+              className="rounded-full px-6"
+            >
+              Get Started
             </Button>
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        <div 
-          className="h-96 bg-cover bg-center relative"
-          style={{ backgroundImage: `url(${heroImage})` }}
-        >
-          <div className="absolute inset-0 bg-gradient-primary/90" />
-          <div className="relative container mx-auto px-4 h-full flex items-center">
-            <div className="max-w-2xl text-white">
-              <Badge className="mb-4 bg-white/20 text-white border-white/30">
-                🎓 Your Academic Success Companion
-              </Badge>
-              <h1 className="text-5xl font-bold mb-6 leading-tight">
-                Turn Your Studies Into A 
-                <span className="text-yellow-300"> Winning Game</span>
-              </h1>
-              <p className="text-xl mb-8 text-white/90 leading-relaxed">
-                ClassMate transforms academic chaos into organized success. Track assignments, 
-                manage schedules, analyze grades, and collaborate with peers - all in one 
-                beautifully designed platform that makes studying actually enjoyable.
-              </p>
+      <section className="relative overflow-hidden bg-background">
+        <div className="container mx-auto px-6 py-24">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="space-y-8">
+              <div className="space-y-4">
+                <Badge variant="secondary" className="rounded-full px-4 py-1.5">
+                  🎓 Academic Excellence Made Simple
+                </Badge>
+                <h1 className="text-5xl lg:text-6xl font-bold tracking-tight">
+                  Your academic
+                  <span className="block text-muted-foreground">companion</span>
+                </h1>
+                <p className="text-xl text-muted-foreground leading-relaxed max-w-lg">
+                  Transform chaos into clarity. Organize assignments, track progress, 
+                  and achieve your academic goals with our beautifully designed platform.
+                </p>
+              </div>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button 
                   size="lg" 
-                  className="bg-white text-primary hover:bg-white/90"
+                  className="rounded-full px-8 py-6 text-base"
                   onClick={() => setShowAuthDialog(true)}
                 >
-                  <Play className="w-5 h-5 mr-2" />
-                  Start Your Journey
+                  Get Started Free
+                  <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
                 <Button 
                   size="lg" 
                   variant="outline" 
-                  className="border-white text-white hover:bg-white/10"
+                  className="rounded-full px-8 py-6 text-base"
                 >
-                  <BarChart3 className="w-5 h-5 mr-2" />
-                  View Demo
+                  <Play className="w-4 h-4 mr-2" />
+                  Watch Demo
                 </Button>
+              </div>
+            </div>
+            <div className="relative">
+              <div className="relative rounded-2xl overflow-hidden shadow-elegant">
+                <img 
+                  src={heroImage} 
+                  alt="Students collaborating"
+                  className="w-full h-[400px] object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+              </div>
+              <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-primary rounded-full flex items-center justify-center shadow-elegant">
+                <Trophy className="w-12 h-12 text-primary-foreground" />
               </div>
             </div>
           </div>
@@ -157,28 +170,31 @@ const Landing = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <Badge className="mb-4">✨ Powerful Features</Badge>
-            <h2 className="text-4xl font-bold mb-6">Everything You Need To Excel</h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              ClassMate provides all the tools you need to organize your academic life, 
-              track your progress, and achieve your educational goals with confidence.
+      <section className="py-24 bg-muted/50">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16 space-y-4">
+            <Badge variant="secondary" className="rounded-full">
+              ✨ Features
+            </Badge>
+            <h2 className="text-4xl lg:text-5xl font-bold tracking-tight">
+              Everything you need
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Powerful tools designed to help you organize, track, and excel in your academic journey.
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-                <CardHeader>
-                  <div className={`w-12 h-12 rounded-lg bg-gradient-primary/10 flex items-center justify-center mb-4`}>
-                    <feature.icon className={`w-6 h-6 ${feature.color}`} />
+              <Card key={index} className="border-0 shadow-card hover:shadow-elegant transition-all duration-300 bg-background">
+                <CardHeader className="pb-4">
+                  <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center mb-4">
+                    <feature.icon className="w-6 h-6 text-foreground" />
                   </div>
-                  <CardTitle className="text-xl">{feature.title}</CardTitle>
+                  <CardTitle className="text-xl font-semibold">{feature.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-base leading-relaxed">
+                  <CardDescription className="text-base text-muted-foreground leading-relaxed">
                     {feature.description}
                   </CardDescription>
                 </CardContent>
@@ -189,21 +205,25 @@ const Landing = () => {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-20 bg-muted/50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <Badge className="mb-4">📈 Proven Results</Badge>
-            <h2 className="text-4xl font-bold mb-6">Why Students Love ClassMate</h2>
+      <section className="py-24">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16 space-y-4">
+            <Badge variant="secondary" className="rounded-full">
+              📈 Results
+            </Badge>
+            <h2 className="text-4xl lg:text-5xl font-bold tracking-tight">
+              Proven impact
+            </h2>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {benefits.map((benefit, index) => (
-              <div key={index} className="text-center">
-                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-primary rounded-full flex items-center justify-center">
+              <div key={index} className="text-center space-y-4">
+                <div className="w-16 h-16 mx-auto bg-primary rounded-2xl flex items-center justify-center">
                   <benefit.icon className="w-8 h-8 text-primary-foreground" />
                 </div>
-                <h3 className="text-xl font-semibold mb-3">{benefit.title}</h3>
-                <p className="text-muted-foreground">{benefit.description}</p>
+                <h3 className="text-xl font-semibold">{benefit.title}</h3>
+                <p className="text-muted-foreground leading-relaxed">{benefit.description}</p>
               </div>
             ))}
           </div>
@@ -211,25 +231,29 @@ const Landing = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <Card className="border-0 bg-gradient-primary text-white">
-            <CardContent className="p-12 text-center">
-              <h2 className="text-4xl font-bold mb-6">Ready To Transform Your Studies?</h2>
-              <p className="text-xl mb-8 text-white/90 max-w-2xl mx-auto">
-                Join thousands of students who have already boosted their academic performance 
-                with ClassMate. Start your journey to academic excellence today.
-              </p>
+      <section className="py-24 bg-muted/50">
+        <div className="container mx-auto px-6">
+          <Card className="border-0 bg-primary text-primary-foreground">
+            <CardContent className="p-12 lg:p-16 text-center space-y-8">
+              <div className="space-y-4">
+                <h2 className="text-4xl lg:text-5xl font-bold tracking-tight">
+                  Ready to start?
+                </h2>
+                <p className="text-xl text-primary-foreground/80 max-w-2xl mx-auto">
+                  Join thousands of students who have transformed their academic journey with ClassMate.
+                </p>
+              </div>
               <Button 
                 size="lg" 
-                className="bg-white text-primary hover:bg-white/90"
+                variant="secondary"
+                className="rounded-full px-8 py-6 text-base"
                 onClick={() => setShowAuthDialog(true)}
               >
                 Get Started Free
-                <ArrowRight className="w-5 h-5 ml-2" />
+                <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
-              <p className="text-sm mt-4 text-white/70">
-                No credit card required • Free forever • Setup in 30 seconds
+              <p className="text-sm text-primary-foreground/60">
+                No credit card required • Free forever
               </p>
             </CardContent>
           </Card>
@@ -237,17 +261,17 @@ const Landing = () => {
       </section>
 
       {/* Footer */}
-      <footer className="border-t bg-card py-8">
-        <div className="container mx-auto px-4">
+      <footer className="border-t border-border bg-background py-12">
+        <div className="container mx-auto px-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-6 h-6 rounded bg-gradient-primary flex items-center justify-center">
-                <BookOpen className="w-4 h-4 text-primary-foreground" />
+              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+                <BookOpen className="w-5 h-5 text-primary-foreground" />
               </div>
-              <span className="font-semibold">ClassMate</span>
+              <span className="font-semibold text-lg">ClassMate</span>
             </div>
             <p className="text-sm text-muted-foreground">
-              © 2024 ClassMate. Built for student success.
+              © 2024 ClassMate. Built for academic excellence.
             </p>
           </div>
         </div>

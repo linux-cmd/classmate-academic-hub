@@ -74,7 +74,7 @@ const Assignments = () => {
             <h1 className="text-3xl font-bold">Assignments</h1>
             <p className="text-muted-foreground">Track and manage your academic tasks</p>
           </div>
-          <AddAssignmentDialog onAddAssignment={addAssignment} />
+          <AddAssignmentDialog />
         </div>
 
         {/* Stats Cards */}

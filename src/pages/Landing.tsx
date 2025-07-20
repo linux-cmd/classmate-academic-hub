@@ -122,7 +122,7 @@ const Landing = () => {
             <div className="space-y-8">
               <div className="space-y-4">
                 <Badge variant="secondary" className="rounded-full px-4 py-1.5">
-                  🎓 Academic Excellence Made Simple
+                  Classmate | Academic Excellence Made Simple
                 </Badge>
                 <h1 className="text-5xl lg:text-6xl font-bold tracking-tight">
                   Your academic

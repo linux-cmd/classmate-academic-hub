@@ -67,7 +67,10 @@ function generateFaviconWithLucide() {
     ctx.fill();
 
     // Draw icon larger (take up 80% of canvas)
-    ctx.drawImage(img, 12, 12, 40, 40);
+    const iconSize = 43; // 80% of 64 
+
+    const offset = (64 - iconSize) / 2;
+    ctx.drawImage(img, offset, offset, iconSize, iconSize);
     // Set favicon
     const faviconUrl = canvas.toDataURL("image/png");
     let link = document.querySelector("link[rel*='icon']") as HTMLLinkElement;

@@ -8,6 +8,7 @@ import {
   TrendingUp, 
   Users, 
   BookOpen,
+  MapPin,
   Settings,
   Bell,
   LogIn,
@@ -34,8 +35,9 @@ const Navigation = ({ currentPage = "dashboard", onPageChange }: NavigationProps
     { id: "dashboard", icon: Home, label: "Dashboard", active: currentPage === "dashboard" },
     { id: "assignments", icon: CheckSquare, label: "Assignments", active: currentPage === "assignments" },
     { id: "schedule", icon: Calendar, label: "Schedule", active: currentPage === "schedule" },
+    { id: "notes", icon: BookOpen, label: "Notes", active: currentPage === "notes" },
     { id: "grades", icon: TrendingUp, label: "Grades", active: currentPage === "grades" },
-    { id: "events", icon: BookOpen, label: "Events", active: currentPage === "events" },
+    { id: "events", icon: MapPin, label: "Events", active: currentPage === "events" },
     { id: "study-groups", icon: Users, label: "Study Groups", active: currentPage === "study-groups" },
   ];
 

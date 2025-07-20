@@ -6,8 +6,10 @@ import ScheduleOverview from "@/components/ScheduleOverview";
 import GradesOverview from "@/components/GradesOverview";
 import EventsBoard from "@/components/EventsBoard";
 import TutorialDialog from "@/components/TutorialDialog";
+import TourDialog from "@/components/TourDialog";
 import Assignments from "./Assignments";
 import Schedule from "./Schedule";
+import Notes from "./Notes";
 import StudyGroups from "./StudyGroups";
 import Grades from "./Grades";
 import Events from "./Events";
@@ -18,15 +20,19 @@ import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 const Index = () => {
   const [currentPage, setCurrentPage] = useState("dashboard");
   const [showTutorial, setShowTutorial] = useState(false);
+  const [showTour, setShowTour] = useState(false);
   const { user, profile, isAuthenticated, loading } = useSupabaseAuth();
 
   useEffect(() => {
-    // Show tutorial for new users
-    const hasSeenTutorial = localStorage.getItem('classmate-tutorial-completed');
-    if (!hasSeenTutorial) {
+    const hasSeenTutorial = localStorage.getItem('classmate-tutorial-seen');
+    const hasSeenTour = localStorage.getItem('classmate-tour-completed');
+    
+    if (!hasSeenTutorial && isAuthenticated) {
       setShowTutorial(true);
+    } else if (!hasSeenTour && isAuthenticated) {
+      setShowTour(true);
     }
-  }, []);
+  }, [isAuthenticated]);
 
   const renderPage = () => {
     switch (currentPage) {
@@ -34,6 +40,8 @@ const Index = () => {
         return <Assignments />;
       case "schedule":
         return <Schedule />;
+      case "notes":
+        return <Notes />;
       case "study-groups":
         return <StudyGroups />;
       case "grades":
@@ -109,6 +117,7 @@ const Index = () => {
       <Navigation currentPage={currentPage} onPageChange={setCurrentPage} />
       {renderPage()}
       <TutorialDialog open={showTutorial} onOpenChange={setShowTutorial} />
+      <TourDialog open={showTour} onOpenChange={setShowTour} />
     </>
   );
 };

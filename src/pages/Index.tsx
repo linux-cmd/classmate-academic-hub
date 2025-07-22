@@ -29,10 +29,16 @@ const Index = () => {
     
     if (!hasSeenTutorial && isAuthenticated) {
       setShowTutorial(true);
-    } else if (!hasSeenTour && isAuthenticated) {
-      setShowTour(true);
+    } else if (!hasSeenTour && isAuthenticated && user) {
+      // Create unique key for this user on this device
+      const userTourKey = `classmate-tour-completed-${user.id}`;
+      const userHasSeenTour = localStorage.getItem(userTourKey);
+      
+      if (!userHasSeenTour) {
+        setShowTour(true);
+      }
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, user]);
 
   const renderPage = () => {
     switch (currentPage) {

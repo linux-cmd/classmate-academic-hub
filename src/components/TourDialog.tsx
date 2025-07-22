@@ -70,6 +70,11 @@ const TourDialog = ({ open, onOpenChange }: TourDialogProps) => {
   };
 
   const finishTour = () => {
+    // Get user from context or props - we'll need to pass user as prop
+    const user = JSON.parse(localStorage.getItem('supabase.auth.token') || '{}')?.user;
+    if (user?.id) {
+      localStorage.setItem(`classmate-tour-completed-${user.id}`, 'true');
+    }
     localStorage.setItem('classmate-tour-completed', 'true');
     onOpenChange(false);
     setCurrentStep(0);
@@ -81,14 +86,9 @@ const TourDialog = ({ open, onOpenChange }: TourDialogProps) => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Sparkles className="w-5 h-5 text-primary" />
-              <DialogTitle>Getting Started Tour</DialogTitle>
-            </div>
-            <Button variant="ghost" size="icon" onClick={() => onOpenChange(false)}>
-              <X className="w-4 h-4" />
-            </Button>
+          <div className="flex items-center space-x-2">
+            <Sparkles className="w-5 h-5 text-primary" />
+            <DialogTitle>Getting Started Tour</DialogTitle>
           </div>
         </DialogHeader>
 

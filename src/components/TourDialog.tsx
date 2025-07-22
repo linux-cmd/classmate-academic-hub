@@ -83,8 +83,12 @@ const TourDialog = ({ open, onOpenChange }: TourDialogProps) => {
   const step = tourSteps[currentStep];
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl">
+    <Dialog open={open} onOpenChange={(newOpen) => {
+      if (!newOpen) {
+        finishTour();
+      }
+    }}>
+      <DialogContent className="max-w-2xl" onPointerDownOutside={(e) => e.preventDefault()}>
         <DialogHeader>
           <div className="flex items-center space-x-2">
             <Sparkles className="w-5 h-5 text-primary" />

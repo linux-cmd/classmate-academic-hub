@@ -1,66 +1,44 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Calendar, Settings, RefreshCw, Link as LinkIcon } from "lucide-react";
+import { Calendar, Settings, RefreshCw, Link as LinkIcon, ExternalLink } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useGoogleCalendar } from "@/hooks/useGoogleCalendar";
 
 interface CalendarIntegrationProps {
   onSyncCalendar?: () => void;
 }
 
 const CalendarIntegration = ({ onSyncCalendar }: CalendarIntegrationProps) => {
-  const [isConnected, setIsConnected] = useState(false);
-  const [isSyncing, setIsSyncing] = useState(false);
   const [showLocalEvents, setShowLocalEvents] = useState(true);
   const [showGoogleEvents, setShowGoogleEvents] = useState(true);
-  const { toast } = useToast();
+  const { isConnected, isLoading, connect, disconnect, syncEvents } = useGoogleCalendar();
 
-  const handleGoogleConnect = async () => {
-    setIsSyncing(true);
-    
-    // Simulate connection process
-    setTimeout(() => {
-      setIsConnected(true);
-      setIsSyncing(false);
-      toast({
-        title: "Google Calendar Connected!",
-        description: "Your calendar events will now sync automatically.",
-      });
-      onSyncCalendar?.();
-    }, 2000);
-  };
+  // Load Google API script
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://apis.google.com/js/api.js';
+    script.async = true;
+    document.head.appendChild(script);
+
+    return () => {
+      document.head.removeChild(script);
+    };
+  }, []);
 
   const handleSync = async () => {
-    if (!isConnected) {
-      toast({
-        title: "Not Connected",
-        description: "Please connect your Google Calendar first.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsSyncing(true);
+    if (!isConnected) return;
     
-    // Simulate sync
-    setTimeout(() => {
-      setIsSyncing(false);
-      toast({
-        title: "Calendar Synced",
-        description: "Your events have been updated successfully.",
-      });
-    }, 1500);
-  };
-
-  const handleDisconnect = () => {
-    setIsConnected(false);
-    toast({
-      title: "Calendar Disconnected",
-      description: "Google Calendar has been disconnected from ClassMate.",
-    });
+    try {
+      const events = await syncEvents();
+      console.log('Synced events:', events);
+      onSyncCalendar?.();
+    } catch (error) {
+      console.error('Sync failed:', error);
+    }
   };
 
   return (
@@ -88,8 +66,8 @@ const CalendarIntegration = ({ onSyncCalendar }: CalendarIntegrationProps) => {
           </div>
           
           {!isConnected ? (
-            <Button onClick={handleGoogleConnect} disabled={isSyncing}>
-              {isSyncing ? (
+            <Button onClick={connect} disabled={isLoading}>
+              {isLoading ? (
                 <>
                   <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
                   Connecting...
@@ -103,14 +81,14 @@ const CalendarIntegration = ({ onSyncCalendar }: CalendarIntegrationProps) => {
             </Button>
           ) : (
             <div className="flex space-x-2">
-              <Button variant="outline" onClick={handleSync} disabled={isSyncing}>
-                {isSyncing ? (
+              <Button variant="outline" onClick={handleSync} disabled={isLoading}>
+                {isLoading ? (
                   <RefreshCw className="w-4 h-4 animate-spin" />
                 ) : (
                   <RefreshCw className="w-4 h-4" />
                 )}
               </Button>
-              <Button variant="outline" onClick={handleDisconnect}>
+              <Button variant="outline" onClick={disconnect}>
                 <Settings className="w-4 h-4" />
               </Button>
             </div>
@@ -147,20 +125,57 @@ const CalendarIntegration = ({ onSyncCalendar }: CalendarIntegrationProps) => {
 
         {/* API Setup Instructions */}
         {!isConnected && (
-          <div className="p-3 bg-muted rounded-lg">
-            <h4 className="font-medium mb-2">Setup Instructions</h4>
+          <div className="p-3 bg-muted rounded-lg space-y-3">
+            <h4 className="font-medium mb-2">API Setup Instructions</h4>
             <p className="text-sm text-muted-foreground mb-2">
-              To connect Google Calendar, you'll need to:
+              To connect Google Calendar, you'll need to set up your API credentials:
             </p>
-            <ol className="text-sm text-muted-foreground space-y-1 list-decimal list-inside">
-              <li>Create a Google Cloud Console project</li>
-              <li>Enable the Google Calendar API</li>
-              <li>Configure OAuth2 credentials</li>
-              <li>Add your credentials to the app</li>
-            </ol>
-            <p className="text-sm text-muted-foreground mt-2">
-              The calendar structure is ready for your API integration!
-            </p>
+            
+            <div className="space-y-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="w-full justify-start"
+                onClick={() => window.open('https://console.cloud.google.com/', '_blank')}
+              >
+                <ExternalLink className="w-4 h-4 mr-2" />
+                1. Open Google Cloud Console
+              </Button>
+              
+              <div className="text-sm text-muted-foreground pl-6">
+                Create a new project or select an existing one
+              </div>
+              
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="w-full justify-start"
+                onClick={() => window.open('https://console.cloud.google.com/apis/library/calendar-json.googleapis.com', '_blank')}
+              >
+                <ExternalLink className="w-4 h-4 mr-2" />
+                2. Enable Google Calendar API
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="w-full justify-start"
+                onClick={() => window.open('https://console.cloud.google.com/apis/credentials', '_blank')}
+              >
+                <ExternalLink className="w-4 h-4 mr-2" />
+                3. Create OAuth2 Credentials
+              </Button>
+              
+              <div className="text-sm text-muted-foreground pl-6">
+                Add your domain to authorized origins and redirect URIs
+              </div>
+            </div>
+            
+            <div className="mt-3 p-2 bg-blue-50 dark:bg-blue-950/20 rounded border border-blue-200 dark:border-blue-800">
+              <p className="text-sm text-blue-700 dark:text-blue-300">
+                💡 <strong>Need the API keys?</strong> Set VITE_GOOGLE_CLIENT_ID and VITE_GOOGLE_API_KEY in your environment variables.
+              </p>
+            </div>
           </div>
         )}
 

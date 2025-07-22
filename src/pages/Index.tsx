@@ -25,20 +25,19 @@ const Index = () => {
 
   useEffect(() => {
     const hasSeenTutorial = localStorage.getItem('classmate-tutorial-seen');
-    const hasSeenTour = localStorage.getItem('classmate-tour-completed');
     
     if (!hasSeenTutorial && isAuthenticated) {
       setShowTutorial(true);
-    } else if (!hasSeenTour && isAuthenticated && user) {
-      // Create unique key for this user on this device
+    } else if (isAuthenticated && user && !showTutorial) {
+      // Create unique key for this user
       const userTourKey = `classmate-tour-completed-${user.id}`;
       const userHasSeenTour = localStorage.getItem(userTourKey);
       
-      if (!userHasSeenTour) {
+      if (!userHasSeenTour && !showTour) {
         setShowTour(true);
       }
     }
-  }, [isAuthenticated, user]);
+  }, [isAuthenticated, user, showTutorial, showTour]);
 
   const renderPage = () => {
     switch (currentPage) {

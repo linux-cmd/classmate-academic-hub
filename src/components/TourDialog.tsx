@@ -99,9 +99,7 @@ const TourDialog = ({ open, onOpenChange }: TourDialogProps) => {
   return (
     <Dialog
       open={open}
-      onOpenChange={(newOpen) => {
-        if (!newOpen) finishTour();
-      }}
+      onOpenChange={onOpenChange}
     >
       <DialogContent className="max-w-2xl" onPointerDownOutside={(e) => e.preventDefault()}>
         <DialogHeader>

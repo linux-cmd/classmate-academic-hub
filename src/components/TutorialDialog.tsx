@@ -142,17 +142,12 @@ const TutorialDialog = ({ open, onOpenChange }: TutorialDialogProps) => {
     >
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <div className="flex items-center justify-between">
-            <DialogTitle className="flex items-center space-x-2">
-              <span>Getting Started</span>
-              <Badge variant="outline" className="text-xs">
-                {currentStep + 1} of {tutorialSteps.length}
-              </Badge>
-            </DialogTitle>
-            <Button variant="ghost" size="icon" onClick={completeTutorial}>
-              <X className="w-4 h-4" />
-            </Button>
-          </div>
+          <DialogTitle className="flex items-center space-x-2">
+            <span>Getting Started</span>
+            <Badge variant="outline" className="text-xs">
+              {currentStep + 1} of {tutorialSteps.length}
+            </Badge>
+          </DialogTitle>
         </DialogHeader>
 
         {/* Progress bar */}

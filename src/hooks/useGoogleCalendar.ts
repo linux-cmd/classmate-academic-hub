@@ -42,8 +42,11 @@ export const useGoogleCalendar = (): UseGoogleCalendarReturn => {
     await window.gapi.client.init({
       apiKey: process.env.VITE_GOOGLE_API_KEY || '',
       clientId: process.env.VITE_GOOGLE_CLIENT_ID || '',
-      discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
-      scope: 'https://www.googleapis.com/auth/calendar'
+      discoveryDocs: [
+        'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest',
+        'https://www.googleapis.com/discovery/v1/apis/tasks/v1/rest'
+      ],
+      scope: 'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/tasks'
     });
   }, []);
 
@@ -58,8 +61,8 @@ export const useGoogleCalendar = (): UseGoogleCalendarReturn => {
       if (user.isSignedIn()) {
         setIsConnected(true);
         toast({
-          title: "Google Calendar Connected!",
-          description: "Your calendar events will now sync automatically.",
+          title: "Google Services Connected!",
+          description: "Calendar and Tasks will now sync automatically.",
         });
       }
     } catch (error) {
@@ -81,8 +84,8 @@ export const useGoogleCalendar = (): UseGoogleCalendarReturn => {
     }
     setIsConnected(false);
     toast({
-      title: "Calendar Disconnected",
-      description: "Google Calendar has been disconnected from ClassMate.",
+      title: "Google Services Disconnected", 
+      description: "Calendar and Tasks have been disconnected from ClassMate.",
     });
   }, [toast]);
 
@@ -175,6 +178,32 @@ declare global {
               calendarId: string;
               resource: Partial<GoogleCalendarEvent>;
             }) => Promise<{ result: GoogleCalendarEvent }>;
+          };
+        };
+        tasks: {
+          tasklists: {
+            list: () => Promise<{ result: { items: any[] } }>;
+          };
+          tasks: {
+            list: (params: {
+              tasklist: string;
+              showCompleted?: boolean;
+              showDeleted?: boolean;
+              showHidden?: boolean;
+            }) => Promise<{ result: { items: any[] } }>;
+            insert: (params: {
+              tasklist: string;
+              resource: any;
+            }) => Promise<{ result: any }>;
+            update: (params: {
+              tasklist: string;
+              task: string;
+              resource: any;
+            }) => Promise<{ result: any }>;
+            delete: (params: {
+              tasklist: string;
+              task: string;
+            }) => Promise<void>;
           };
         };
       };

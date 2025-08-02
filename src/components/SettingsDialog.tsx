@@ -247,15 +247,6 @@ const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
                   <Switch />
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label>Tutorial Mode</Label>
-                    <p className="text-sm text-muted-foreground">
-                      Show helpful tips and tutorials
-                    </p>
-                  </div>
-                  <Switch defaultChecked />
-                </div>
               </CardContent>
             </Card>
           </TabsContent>

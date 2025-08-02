@@ -151,7 +151,11 @@ const TourDialog = ({ open, onOpenChange }: TourDialogProps) => {
             </Button>
 
             <div className="flex space-x-2">
-              <Button variant="ghost" onClick={finishTour}>
+              <Button variant="ghost" onClick={() => {
+                markTourComplete();
+                onOpenChange(false);
+                setCurrentStep(0);
+              }}>
                 Skip Tour
               </Button>
 

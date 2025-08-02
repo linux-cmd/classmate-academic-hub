@@ -5,8 +5,6 @@ import AssignmentTracker from "@/components/AssignmentTracker";
 import ScheduleOverview from "@/components/ScheduleOverview";
 import GradesOverview from "@/components/GradesOverview";
 import EventsBoard from "@/components/EventsBoard";
-import TutorialDialog from "@/components/TutorialDialog";
-import TourDialog from "@/components/TourDialog";
 import Assignments from "./Assignments";
 import Schedule from "./Schedule";
 import Notes from "./Notes";
@@ -19,25 +17,8 @@ import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 
 const Index = () => {
   const [currentPage, setCurrentPage] = useState("dashboard");
-  const [showTutorial, setShowTutorial] = useState(false);
-  const [showTour, setShowTour] = useState(false);
   const { user, profile, isAuthenticated, loading } = useSupabaseAuth();
 
-  useEffect(() => {
-    const hasSeenTutorial = localStorage.getItem('classmate-tutorial-seen');
-    
-    if (!hasSeenTutorial && isAuthenticated) {
-      setShowTutorial(true);
-    } else if (isAuthenticated && user && !showTutorial) {
-      // Create unique key for this user
-      const userTourKey = `classmate-tour-completed-${user.id}`;
-      const userHasSeenTour = localStorage.getItem(userTourKey);
-      
-      if (!userHasSeenTour && !showTour) {
-        setShowTour(true);
-      }
-    }
-  }, [isAuthenticated, user, showTutorial, showTour]);
 
   const renderPage = () => {
     switch (currentPage) {
@@ -121,8 +102,6 @@ const Index = () => {
     <>
       <Navigation currentPage={currentPage} onPageChange={setCurrentPage} />
       {renderPage()}
-      <TutorialDialog open={showTutorial} onOpenChange={setShowTutorial} />
-      <TourDialog open={showTour} onOpenChange={setShowTour} />
     </>
   );
 };

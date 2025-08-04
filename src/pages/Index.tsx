@@ -11,6 +11,7 @@ import Notes from "./Notes";
 import StudyGroups from "./StudyGroups";
 import Grades from "./Grades";
 import Events from "./Events";
+import Tasks from "./Tasks";
 import Landing from "./Landing";
 import heroImage from "@/assets/hero-study.jpg";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
@@ -24,6 +25,8 @@ const Index = () => {
     switch (currentPage) {
       case "assignments":
         return <Assignments />;
+      case "tasks":
+        return <Tasks />;
       case "schedule":
         return <Schedule />;
       case "notes":

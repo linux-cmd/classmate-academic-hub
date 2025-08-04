@@ -34,6 +34,7 @@ const Navigation = ({ currentPage = "dashboard", onPageChange }: NavigationProps
   const navItems = [
     { id: "dashboard", icon: Home, label: "Dashboard", active: currentPage === "dashboard" },
     { id: "assignments", icon: CheckSquare, label: "Assignments", active: currentPage === "assignments" },
+    { id: "tasks", icon: CheckSquare, label: "Tasks", active: currentPage === "tasks" },
     { id: "schedule", icon: Calendar, label: "Schedule", active: currentPage === "schedule" },
     { id: "notes", icon: BookOpen, label: "Notes", active: currentPage === "notes" },
     { id: "grades", icon: TrendingUp, label: "Grades", active: currentPage === "grades" },

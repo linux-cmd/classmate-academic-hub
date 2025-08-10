@@ -78,66 +78,7 @@ export const getUser = (): User | null =>
 export const saveUser = (user: User): void =>
   saveToStorage(STORAGE_KEYS.USER, user);
 
-// Initialize with sample data if empty
+// Initialize with no sample data (fresh start)
 export const initializeSampleData = () => {
-  if (getAssignments().length === 0) {
-    const sampleAssignments: Assignment[] = [
-      {
-        id: '1',
-        title: 'Math 101 - Problem Set 4',
-        course: 'Calculus I',
-        dueDate: '2024-03-15',
-        priority: 'high',
-        completed: false,
-        description: 'Complete problems 1-20 from chapter 5',
-        timeLeft: '2 days'
-      },
-      {
-        id: '2',
-        title: 'History Essay - Renaissance Art',
-        course: 'Art History',
-        dueDate: '2024-03-18',
-        priority: 'medium',
-        completed: false,
-        description: 'Write a 5-page essay on Renaissance art influences',
-        timeLeft: '5 days'
-      }
-    ];
-    saveAssignments(sampleAssignments);
-  }
-
-  if (getCourses().length === 0) {
-    const sampleCourses: Course[] = [
-      {
-        id: '1',
-        name: 'Calculus I',
-        code: 'MATH 101',
-        grade: 'A-',
-        percentage: 92,
-        credits: 4,
-        trend: 'up'
-      },
-      {
-        id: '2',
-        name: 'Physics II',
-        code: 'PHYS 201',
-        grade: 'B+',
-        percentage: 87,
-        credits: 4,
-        trend: 'up'
-      }
-    ];
-    saveCourses(sampleCourses);
-  }
-
-  if (getUser() === null) {
-    const sampleUser: User = {
-      id: '1',
-      name: 'John Doe',
-      email: 'john.doe@university.edu',
-      initials: 'JD',
-      gpa: '3.7'
-    };
-    saveUser(sampleUser);
-  }
+  // Intentionally left blank to keep the app data-free by default
 };

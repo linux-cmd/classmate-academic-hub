@@ -7,15 +7,13 @@ import {
   getSchedule, saveSchedule,
   getStudyGroups, saveStudyGroups,
   getMessages, saveMessages,
-  getUser, saveUser,
-  initializeSampleData
+  getUser, saveUser
 } from '@/lib/storage';
 
 export const useAssignments = () => {
   const [assignments, setAssignments] = useState<Assignment[]>([]);
 
   useEffect(() => {
-    initializeSampleData();
     setAssignments(getAssignments());
   }, []);
 
@@ -55,7 +53,6 @@ export const useCourses = () => {
   const [courses, setCourses] = useState<Course[]>([]);
 
   useEffect(() => {
-    initializeSampleData();
     setCourses(getCourses());
   }, []);
 
@@ -121,7 +118,6 @@ export const useAuth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    initializeSampleData();
     const savedUser = getUser();
     if (savedUser) {
       setUser(savedUser);
@@ -136,7 +132,7 @@ export const useAuth = () => {
       name: email.split('@')[0],
       email,
       initials: email.substring(0, 2).toUpperCase(),
-      gpa: '3.7'
+      gpa: '0.0'
     };
     setUser(demoUser);
     setIsAuthenticated(true);

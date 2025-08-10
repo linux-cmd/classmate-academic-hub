@@ -35,53 +35,7 @@ interface Notification {
   priority: 'low' | 'medium' | 'high';
 }
 
-const mockNotifications: Notification[] = [
-  {
-    id: '1',
-    type: 'assignment',
-    title: 'Assignment Due Soon',
-    message: 'Research Paper for History 101 is due in 2 hours',
-    time: '2 hours ago',
-    read: false,
-    priority: 'high'
-  },
-  {
-    id: '2',
-    type: 'grade',
-    title: 'New Grade Posted',
-    message: 'Your Mathematics Quiz grade has been posted: A-',
-    time: '4 hours ago',
-    read: false,
-    priority: 'medium'
-  },
-  {
-    id: '3',
-    type: 'event',
-    title: 'Study Session Today',
-    message: 'Mathematics study group meeting at 7 PM in Library Room 204',
-    time: '6 hours ago',
-    read: true,
-    priority: 'medium'
-  },
-  {
-    id: '4',
-    type: 'study_group',
-    title: 'New Message',
-    message: 'Sarah posted in CS Study Group: "Anyone available for coding practice?"',
-    time: '1 day ago',
-    read: true,
-    priority: 'low'
-  },
-  {
-    id: '5',
-    type: 'assignment',
-    title: 'Assignment Reminder',
-    message: 'Don\'t forget about your Physics Lab Report due tomorrow',
-    time: '1 day ago',
-    read: true,
-    priority: 'medium'
-  }
-];
+const mockNotifications: Notification[] = [];
 
 const getNotificationIcon = (type: string) => {
   switch (type) {

@@ -4,52 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { BookOpen, Users, MapPin, Calendar, Clock, TrendingUp } from "lucide-react";
 
 const EventsBoard = () => {
-  const events = [
-    {
-      id: 1,
-      title: "Spring Career Fair",
-      category: "career",
-      date: "Mar 20",
-      time: "10:00 AM - 4:00 PM",
-      location: "Student Union",
-      attendees: 150,
-      rsvp: false,
-      description: "Meet employers from tech, finance, and healthcare industries"
-    },
-    {
-      id: 2,
-      title: "Mathematics Study Group",
-      category: "academic",
-      date: "Mar 16",
-      time: "7:00 PM - 9:00 PM",
-      location: "Library Room 204",
-      attendees: 12,
-      rsvp: true,
-      description: "Weekly calculus problem solving session"
-    },
-    {
-      id: 3,
-      title: "Spring Festival",
-      category: "social",
-      date: "Mar 25",
-      time: "6:00 PM - 11:00 PM",
-      location: "Campus Quad",
-      attendees: 500,
-      rsvp: false,
-      description: "Food trucks, live music, and games"
-    },
-    {
-      id: 4,
-      title: "Research Symposium",
-      category: "academic",
-      date: "Mar 18",
-      time: "1:00 PM - 5:00 PM",
-      location: "Science Building",
-      attendees: 75,
-      rsvp: true,
-      description: "Student research presentations across all departments"
-    }
-  ];
+  const events: Array<any> = [];
 
   const getCategoryColor = (category: string) => {
     switch (category) {

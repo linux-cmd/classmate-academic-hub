@@ -9,70 +9,7 @@ import { TrendingUp, BookOpen, Award, Calendar, Target } from "lucide-react";
 const Grades = () => {
   const [selectedSemester, setSelectedSemester] = useState("current");
 
-  const courses = [
-    {
-      id: 1,
-      name: "Calculus I",
-      code: "MATH 101",
-      grade: "A-",
-      percentage: 92,
-      credits: 4,
-      trend: "up",
-      professor: "Dr. Smith",
-      assignments: [
-        { name: "Midterm Exam", grade: "A-", weight: 30 },
-        { name: "Final Project", grade: "A", weight: 25 },
-        { name: "Quiz Average", grade: "B+", weight: 20 },
-        { name: "Homework", grade: "A", weight: 25 }
-      ]
-    },
-    {
-      id: 2,
-      name: "Physics II",
-      code: "PHYS 201",
-      grade: "B+",
-      percentage: 87,
-      credits: 4,
-      trend: "up",
-      professor: "Dr. Johnson",
-      assignments: [
-        { name: "Lab Reports", grade: "A", weight: 35 },
-        { name: "Midterm", grade: "B", weight: 30 },
-        { name: "Final Exam", grade: "B+", weight: 35 }
-      ]
-    },
-    {
-      id: 3,
-      name: "Art History",
-      code: "HIST 150",
-      grade: "A",
-      percentage: 95,
-      credits: 3,
-      trend: "stable",
-      professor: "Prof. Williams",
-      assignments: [
-        { name: "Research Paper", grade: "A", weight: 40 },
-        { name: "Presentation", grade: "A", weight: 30 },
-        { name: "Participation", grade: "A-", weight: 30 }
-      ]
-    },
-    {
-      id: 4,
-      name: "English Literature",
-      code: "ENG 201",
-      grade: "B",
-      percentage: 83,
-      credits: 3,
-      trend: "down",
-      professor: "Dr. Brown",
-      assignments: [
-        { name: "Essay 1", grade: "B-", weight: 25 },
-        { name: "Essay 2", grade: "B+", weight: 25 },
-        { name: "Final Exam", grade: "B", weight: 35 },
-        { name: "Participation", grade: "A-", weight: 15 }
-      ]
-    }
-  ];
+  const courses: Array<{ id: number; name: string; code: string; grade: string; percentage: number; credits: number; trend: string; professor?: string; assignments?: Array<{ name: string; grade: string; weight: number }>; }> = [];
 
   const getGradeColor = (percentage: number) => {
     if (percentage >= 90) return "text-success";
@@ -88,7 +25,7 @@ const Grades = () => {
     }
   };
 
-  const currentGPA = "3.7";
+  const currentGPA = "0.0";
   const totalCredits = courses.reduce((sum, course) => sum + course.credits, 0);
   const creditGoal = 15;
 
@@ -160,47 +97,57 @@ const Grades = () => {
 
           <TabsContent value="current">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {courses.map((course) => (
-                <Card key={course.id}>
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="text-lg">{course.name}</CardTitle>
-                      <div className="flex items-center space-x-2">
-                        <Badge variant="outline">{course.code}</Badge>
-                        <span className={`font-bold text-lg ${getGradeColor(course.percentage)}`}>
-                          {course.grade}
-                        </span>
-                        <span className="text-lg">{getTrendIcon(course.trend)}</span>
-                      </div>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      {course.professor} • {course.credits} credits
-                    </p>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="mb-4">
-                      <div className="flex justify-between text-sm mb-2">
-                        <span>Overall Grade</span>
-                        <span>{course.percentage}%</span>
-                      </div>
-                      <Progress value={course.percentage} className="h-2" />
-                    </div>
-
-                    <div className="space-y-2">
-                      <h4 className="font-medium text-sm">Grade Breakdown</h4>
-                      {course.assignments.map((assignment, index) => (
-                        <div key={index} className="flex justify-between text-sm">
-                          <span>{assignment.name}</span>
-                          <div className="flex items-center space-x-2">
-                            <span className="text-muted-foreground">{assignment.weight}%</span>
-                            <span className="font-medium">{assignment.grade}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+              {courses.length === 0 ? (
+                <Card className="lg:col-span-2">
+                  <CardContent className="p-8 text-center">
+                    <BookOpen className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                    <h3 className="text-lg font-medium mb-2">No courses yet</h3>
+                    <p className="text-muted-foreground">Add your courses to start tracking grades.</p>
                   </CardContent>
                 </Card>
-              ))}
+              ) : (
+                courses.map((course) => (
+                  <Card key={course.id}>
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-lg">{course.name}</CardTitle>
+                        <div className="flex items-center space-x-2">
+                          <Badge variant="outline">{course.code}</Badge>
+                          <span className={`font-bold text-lg ${getGradeColor(course.percentage)}`}>
+                            {course.grade}
+                          </span>
+                          <span className="text-lg">{getTrendIcon(course.trend)}</span>
+                        </div>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        {course.professor} • {course.credits} credits
+                      </p>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="mb-4">
+                        <div className="flex justify-between text-sm mb-2">
+                          <span>Overall Grade</span>
+                          <span>{course.percentage}%</span>
+                        </div>
+                        <Progress value={course.percentage} className="h-2" />
+                      </div>
+
+                      <div className="space-y-2">
+                        <h4 className="font-medium text-sm">Grade Breakdown</h4>
+                        {course.assignments?.map((assignment, index) => (
+                          <div key={index} className="flex justify-between text-sm">
+                            <span>{assignment.name}</span>
+                            <div className="flex items-center space-x-2">
+                              <span className="text-muted-foreground">{assignment.weight}%</span>
+                              <span className="font-medium">{assignment.grade}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              )}
             </div>
           </TabsContent>
 

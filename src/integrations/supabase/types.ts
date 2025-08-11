@@ -134,6 +134,177 @@ export type Database = {
         }
         Relationships: []
       }
+      group_event_rsvps: {
+        Row: {
+          created_at: string
+          event_id: string
+          id: string
+          status: Database["public"]["Enums"]["rsvp_status"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          id?: string
+          status?: Database["public"]["Enums"]["rsvp_status"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          id?: string
+          status?: Database["public"]["Enums"]["rsvp_status"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      group_events: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          end_time: string | null
+          group_id: string
+          id: string
+          location: string | null
+          start_time: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          end_time?: string | null
+          group_id: string
+          id?: string
+          location?: string | null
+          start_time: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          end_time?: string | null
+          group_id?: string
+          id?: string
+          location?: string | null
+          start_time?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      group_files: {
+        Row: {
+          created_at: string
+          file_name: string | null
+          file_path: string
+          file_type: string | null
+          group_id: string
+          id: string
+          size: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          file_name?: string | null
+          file_path: string
+          file_type?: string | null
+          group_id: string
+          id?: string
+          size?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          file_name?: string | null
+          file_path?: string
+          file_type?: string | null
+          group_id?: string
+          id?: string
+          size?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      group_join_requests: {
+        Row: {
+          created_at: string
+          group_id: string
+          id: string
+          requester_id: string
+          status: Database["public"]["Enums"]["join_request_status"]
+        }
+        Insert: {
+          created_at?: string
+          group_id: string
+          id?: string
+          requester_id: string
+          status?: Database["public"]["Enums"]["join_request_status"]
+        }
+        Update: {
+          created_at?: string
+          group_id?: string
+          id?: string
+          requester_id?: string
+          status?: Database["public"]["Enums"]["join_request_status"]
+        }
+        Relationships: []
+      }
+      group_members: {
+        Row: {
+          group_id: string
+          id: string
+          joined_at: string
+          role: Database["public"]["Enums"]["group_member_role"]
+          user_id: string
+        }
+        Insert: {
+          group_id: string
+          id?: string
+          joined_at?: string
+          role?: Database["public"]["Enums"]["group_member_role"]
+          user_id: string
+        }
+        Update: {
+          group_id?: string
+          id?: string
+          joined_at?: string
+          role?: Database["public"]["Enums"]["group_member_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      group_messages: {
+        Row: {
+          attachments: Json | null
+          content: string
+          created_at: string
+          group_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          attachments?: Json | null
+          content: string
+          created_at?: string
+          group_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          attachments?: Json | null
+          content?: string
+          created_at?: string
+          group_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       notes: {
         Row: {
           content: string | null
@@ -203,15 +374,64 @@ export type Database = {
         }
         Relationships: []
       }
+      study_groups: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          is_public: boolean
+          name: string
+          owner_id: string
+          subject: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_public?: boolean
+          name: string
+          owner_id: string
+          subject?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_public?: boolean
+          name?: string
+          owner_id?: string
+          subject?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      can_join_public_group: {
+        Args: { _group_id: string }
+        Returns: boolean
+      }
+      is_group_admin: {
+        Args: { _group_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_group_member: {
+        Args: { _group_id: string; _user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      group_member_role: "admin" | "member" | "banned"
+      join_request_status: "pending" | "approved" | "denied"
+      rsvp_status: "yes" | "no" | "maybe"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -338,6 +558,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      group_member_role: ["admin", "member", "banned"],
+      join_request_status: ["pending", "approved", "denied"],
+      rsvp_status: ["yes", "no", "maybe"],
+    },
   },
 } as const

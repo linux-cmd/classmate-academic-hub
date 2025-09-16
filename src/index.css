@@ -8,35 +8,39 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    /* Notion-inspired neutral palette */
+    --background: 0 0% 99%;
+    --foreground: 0 0% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card-foreground: 0 0% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
+    --popover-foreground: 0 0% 15%;
 
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
+    /* Notion-style subtle accent */
+    --primary: 224 76% 48%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 0 0% 15%;
 
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 0 0% 15%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 10% 3.9%;
+    /* Notion-style subtle borders */
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 224 76% 48%;
 
-    --success: 142 76% 36%;
+    /* Clean status colors */
+    --success: 142 71% 45%;
     --success-foreground: 0 0% 100%;
 
     --warning: 38 92% 50%;
@@ -45,11 +49,13 @@ All colors MUST be HSL.
     --info: 199 89% 48%;
     --info-foreground: 0 0% 100%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(240 5.9% 10%), hsl(240 3.8% 46.1%));
-    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%), hsl(240 4.8% 95.9%));
+    /* Minimal gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(224 76% 48%), hsl(224 76% 58%));
+    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%), hsl(210 40% 98%));
     
-    --shadow-elegant: 0 1px 2px 0 hsl(240 10% 3.9% / 0.05);
-    --shadow-card: 0 1px 3px 0 hsl(240 10% 3.9% / 0.1), 0 1px 2px -1px hsl(240 10% 3.9% / 0.1);
+    /* Notion-style subtle shadows */
+    --shadow-elegant: 0 1px 2px 0 hsl(0 0% 0% / 0.03), 0 1px 3px 1px hsl(0 0% 0% / 0.04);
+    --shadow-card: 0 1px 3px 0 hsl(0 0% 0% / 0.08), 0 4px 6px -1px hsl(0 0% 0% / 0.04);
 
     --radius: 0.5rem;
 

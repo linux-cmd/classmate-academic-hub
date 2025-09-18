@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
   BookOpen, 
@@ -10,17 +9,17 @@ import {
   CheckSquare, 
   Bell,
   Target,
-  Trophy,
-  Zap,
-  Shield,
+  ArrowRight,
+  Star,
   Clock,
   BarChart3,
-  ArrowRight,
-  Play
+  FileText,
+  Zap,
+  Shield,
+  MessageCircle
 } from "lucide-react";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import AuthDialog from "@/components/AuthDialog";
-import heroImage from "@/assets/hero-study-professional.jpg";
 
 const Landing = () => {
   const { isAuthenticated, signIn, signUp, signInWithGoogle } = useSupabaseAuth();
@@ -29,62 +28,54 @@ const Landing = () => {
   const features = [
     {
       icon: CheckSquare,
-      title: "Smart Assignment Tracking",
-      description: "Never miss a deadline again. Track assignments with due dates, priorities, and completion status.",
-      color: "text-blue-500"
+      title: "Assignment Tracking",
+      description: "Keep track of all your assignments, deadlines, and submissions in one organized place."
     },
     {
       icon: Calendar,
-      title: "Integrated Schedule",
-      description: "Sync your class schedule, study sessions, and important events in one unified calendar.",
-      color: "text-green-500"
+      title: "Schedule Management", 
+      description: "Manage your class schedule, study sessions, and important academic events seamlessly."
     },
     {
       icon: TrendingUp,
       title: "Grade Analytics",
-      description: "Visualize your academic progress with detailed grade tracking and performance insights.",
-      color: "text-purple-500"
+      description: "Monitor your academic performance with detailed grade tracking and progress insights."
     },
     {
       icon: Users,
       title: "Study Groups",
-      description: "Connect with classmates, form study groups, and collaborate on projects effectively.",
-      color: "text-orange-500"
+      description: "Connect with classmates and collaborate effectively on projects and study sessions."
+    },
+    {
+      icon: FileText,
+      title: "Note Taking",
+      description: "Create, organize, and search through your notes with our clean, distraction-free editor."
     },
     {
       icon: Bell,
-      title: "Smart Notifications",
-      description: "Get timely reminders for assignments, exams, and study sessions based on your schedule.",
-      color: "text-red-500"
-    },
-    {
-      icon: Target,
-      title: "Goal Setting",
-      description: "Set academic goals, track your progress, and celebrate achievements along the way.",
-      color: "text-indigo-500"
+      title: "Smart Reminders",
+      description: "Never miss important deadlines with intelligent notifications and reminders."
     }
   ];
 
-  const benefits = [
+  const testimonials = [
     {
-      icon: Trophy,
-      title: "Boost Your GPA",
-      description: "Students using ClassMate see an average 15% improvement in their grades"
+      name: "Sarah Chen",
+      role: "Computer Science Student",
+      content: "ClassMate completely transformed how I organize my coursework. My GPA improved significantly since I started using it.",
+      avatar: "SC"
     },
     {
-      icon: Clock,
-      title: "Save Time",
-      description: "Reduce planning time by 60% with our intelligent scheduling algorithms"
+      name: "Marcus Johnson", 
+      role: "Pre-Med Student",
+      content: "The grade tracking feature is incredible. I can see exactly where I need to focus my study efforts.",
+      avatar: "MJ"
     },
     {
-      icon: Zap,
-      title: "Stay Motivated",
-      description: "Gamified progress tracking keeps you engaged and motivated to succeed"
-    },
-    {
-      icon: Shield,
-      title: "Secure & Private",
-      description: "Your academic data is encrypted and never shared with third parties"
+      name: "Emily Rodriguez",
+      role: "Business Major",
+      content: "Study groups feature helped me connect with amazing classmates. We've formed lasting study partnerships.",
+      avatar: "ER"
     }
   ];
 
@@ -94,136 +85,159 @@ const Landing = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-subtle">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-                <BookOpen className="w-5 h-5 text-primary-foreground" />
+      <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-14 items-center">
+          <div className="mr-4 flex">
+            <div className="flex items-center space-x-2">
+              <div className="flex h-6 w-6 items-center justify-center rounded bg-foreground">
+                <BookOpen className="h-4 w-4 text-background" />
               </div>
-              <h1 className="text-xl font-semibold tracking-tight">ClassMate</h1>
+              <span className="font-semibold">ClassMate</span>
             </div>
+          </div>
+          <div className="flex flex-1 items-center justify-end space-x-2">
+            <Button 
+              variant="ghost"
+              onClick={() => setShowAuthDialog(true)}
+            >
+              Log in
+            </Button>
             <Button 
               onClick={() => setShowAuthDialog(true)}
-              className="rounded-full px-6"
             >
-              Get Started
+              Sign up
             </Button>
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-background">
-        <div className="container mx-auto px-6 py-24">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8">
-              <div className="space-y-4">
-                <Badge variant="secondary" className="rounded-full px-4 py-1.5">
-                  Classmate | Academic Excellence Made Simple
-                </Badge>
-                <h1 className="text-5xl lg:text-6xl font-bold tracking-tight">
-                  Your academic
-                  <span className="block text-muted-foreground">companion</span>
-                </h1>
-                <p className="text-xl text-muted-foreground leading-relaxed max-w-lg">
-                  Transform chaos into clarity. Organize assignments, track progress, 
-                  and achieve your academic goals with our beautifully designed platform.
-                </p>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button 
-                  size="lg" 
-                  className="rounded-full px-8 py-6 text-base"
-                  onClick={() => setShowAuthDialog(true)}
-                >
-                  Get Started Free
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-                <Button 
-                  size="lg" 
-                  variant="outline" 
-                  className="rounded-full px-8 py-6 text-base"
-                >
-                  <Play className="w-4 h-4 mr-2" />
-                  Watch Demo
-                </Button>
-              </div>
-            </div>
-            <div className="relative">
-              <div className="relative rounded-2xl overflow-hidden shadow-elegant">
-                <img 
-                  src={heroImage} 
-                  alt="Students collaborating"
-                  className="w-full h-[400px] object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-              </div>
-              <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-primary rounded-full flex items-center justify-center shadow-elegant">
-                <Trophy className="w-12 h-12 text-primary-foreground" />
-              </div>
-            </div>
+      <section className="container py-24 md:py-32">
+        <div className="mx-auto flex max-w-5xl flex-col items-center space-y-8 text-center">
+          <Badge variant="secondary" className="rounded-full">
+            Academic productivity, simplified
+          </Badge>
+          
+          <h1 className="text-4xl font-bold tracking-tight sm:text-6xl md:text-7xl lg:text-8xl">
+            Your academic
+            <span className="block text-muted-foreground">companion</span>
+          </h1>
+          
+          <p className="max-w-2xl text-lg text-muted-foreground sm:text-xl">
+            Transform your academic workflow with ClassMate. Track assignments, 
+            manage schedules, monitor grades, and collaborate with classmates — all in one beautiful, organized workspace.
+          </p>
+          
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Button 
+              size="lg" 
+              onClick={() => setShowAuthDialog(true)}
+              className="h-12 px-8"
+            >
+              Get started for free
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+            <Button 
+              size="lg" 
+              variant="ghost"
+              className="h-12 px-8"
+            >
+              Learn more
+            </Button>
           </div>
+          
+          <p className="text-sm text-muted-foreground">
+            Free to use • No credit card required
+          </p>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-24 bg-muted/50">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16 space-y-4">
-            <Badge variant="secondary" className="rounded-full">
-              ✨ Features
-            </Badge>
-            <h2 className="text-4xl lg:text-5xl font-bold tracking-tight">
-              Everything you need
+      <section className="container py-24">
+        <div className="mx-auto max-w-5xl">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+              Everything you need to succeed
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Powerful tools designed to help you organize, track, and excel in your academic journey.
+            <p className="mt-4 text-lg text-muted-foreground">
+              Powerful features designed to help you stay organized and excel in your academic journey.
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {features.map((feature, index) => (
-              <Card key={index} className="border-0 shadow-card hover:shadow-elegant transition-all duration-300 bg-background">
-                <CardHeader className="pb-4">
-                  <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center mb-4">
-                    <feature.icon className="w-6 h-6 text-foreground" />
-                  </div>
-                  <CardTitle className="text-xl font-semibold">{feature.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-base text-muted-foreground leading-relaxed">
-                    {feature.description}
-                  </CardDescription>
-                </CardContent>
-              </Card>
+              <div key={index} className="group space-y-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg border bg-card">
+                  <feature.icon className="h-6 w-6" />
+                </div>
+                <h3 className="text-lg font-semibold">{feature.title}</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  {feature.description}
+                </p>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Benefits Section */}
-      <section className="py-24">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16 space-y-4">
-            <Badge variant="secondary" className="rounded-full">
-              📈 Results
-            </Badge>
-            <h2 className="text-4xl lg:text-5xl font-bold tracking-tight">
-              Proven impact
+      {/* Stats Section */}
+      <section className="border-y bg-muted/50 py-24">
+        <div className="container">
+          <div className="mx-auto max-w-5xl">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+                Trusted by students worldwide
+              </h2>
+            </div>
+            
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="text-center space-y-2">
+                <div className="text-3xl font-bold">10,000+</div>
+                <div className="text-muted-foreground">Active students</div>
+              </div>
+              <div className="text-center space-y-2">
+                <div className="text-3xl font-bold">500+</div>
+                <div className="text-muted-foreground">Universities</div>
+              </div>
+              <div className="text-center space-y-2">
+                <div className="text-3xl font-bold">15%</div>
+                <div className="text-muted-foreground">Average GPA improvement</div>
+              </div>
+              <div className="text-center space-y-2">
+                <div className="text-3xl font-bold">98%</div>
+                <div className="text-muted-foreground">Student satisfaction</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="container py-24">
+        <div className="mx-auto max-w-5xl">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+              What students are saying
             </h2>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {benefits.map((benefit, index) => (
-              <div key={index} className="text-center space-y-4">
-                <div className="w-16 h-16 mx-auto bg-primary rounded-2xl flex items-center justify-center">
-                  <benefit.icon className="w-8 h-8 text-primary-foreground" />
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {testimonials.map((testimonial, index) => (
+              <div key={index} className="space-y-4 rounded-lg border bg-card p-6">
+                <div className="flex items-center space-x-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-sm font-medium">
+                    {testimonial.avatar}
+                  </div>
+                  <div>
+                    <div className="font-medium">{testimonial.name}</div>
+                    <div className="text-sm text-muted-foreground">{testimonial.role}</div>
+                  </div>
                 </div>
-                <h3 className="text-xl font-semibold">{benefit.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">{benefit.description}</p>
+                <p className="text-muted-foreground leading-relaxed">
+                  "{testimonial.content}"
+                </p>
               </div>
             ))}
           </div>
@@ -231,47 +245,46 @@ const Landing = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 bg-muted/50">
-        <div className="container mx-auto px-6">
-          <Card className="border-0 bg-primary text-primary-foreground">
-            <CardContent className="p-12 lg:p-16 text-center space-y-8">
-              <div className="space-y-4">
-                <h2 className="text-4xl lg:text-5xl font-bold tracking-tight">
-                  Ready to start?
-                </h2>
-                <p className="text-xl text-primary-foreground/80 max-w-2xl mx-auto">
-                  Join thousands of students who have transformed their academic journey with ClassMate.
-                </p>
-              </div>
-              <Button 
-                size="lg" 
-                variant="secondary"
-                className="rounded-full px-8 py-6 text-base"
-                onClick={() => setShowAuthDialog(true)}
-              >
-                Get Started Free
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-              <p className="text-sm text-primary-foreground/60">
-                No credit card required • Free forever
-              </p>
-            </CardContent>
-          </Card>
+      <section className="container py-24">
+        <div className="mx-auto max-w-3xl text-center space-y-8">
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+            Ready to transform your academic life?
+          </h2>
+          <p className="text-lg text-muted-foreground">
+            Join thousands of students who have already improved their academic performance with ClassMate.
+          </p>
+          <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
+            <Button 
+              size="lg" 
+              onClick={() => setShowAuthDialog(true)}
+              className="h-12 px-8"
+            >
+              Get started for free
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+            <Button 
+              size="lg" 
+              variant="outline"
+              className="h-12 px-8"
+            >
+              Contact sales
+            </Button>
+          </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border bg-background py-12">
-        <div className="container mx-auto px-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-                <BookOpen className="w-5 h-5 text-primary-foreground" />
+      <footer className="border-t bg-muted/50">
+        <div className="container py-12">
+          <div className="flex flex-col items-center justify-between space-y-4 sm:flex-row sm:space-y-0">
+            <div className="flex items-center space-x-2">
+              <div className="flex h-6 w-6 items-center justify-center rounded bg-foreground">
+                <BookOpen className="h-4 w-4 text-background" />
               </div>
-              <span className="font-semibold text-lg">ClassMate</span>
+              <span className="font-semibold">ClassMate</span>
             </div>
             <p className="text-sm text-muted-foreground">
-              © 2024 ClassMate. Built for academic excellence.
+              © 2024 ClassMate. All rights reserved.
             </p>
           </div>
         </div>

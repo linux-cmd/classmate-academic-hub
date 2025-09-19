@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { GroupsSidebar } from "@/components/study-groups/GroupsSidebar";
 import { GroupChat } from "@/components/study-groups/GroupChat";
+import { GroupDashboard } from "@/components/study-groups/GroupDashboard";
 import { useStudyGroups } from "@/hooks/useStudyGroups";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { Button } from "@/components/ui/button";
@@ -55,7 +56,11 @@ const StudyGroups = () => {
 
             <section className="animate-enter">
               {selected ? (
-                <GroupChat group={selected} isMember={isMember(selected.id)} />
+                <GroupDashboard 
+                  group={selected} 
+                  isMember={isMember(selected.id)}
+                  isAdmin={false} // You'd need to determine admin status
+                />
               ) : (
                 <Card className="p-8 text-center">
                   <h2 className="text-lg font-semibold mb-1">Select a group</h2>

@@ -34,17 +34,6 @@ export const GoogleIntegration: React.FC<GoogleIntegrationProps> = ({ onSync }) 
     getTasks 
   } = useGoogleTasks();
 
-  // Load Google API script if not already loaded
-  useEffect(() => {
-    if (!window.gapi) {
-      const script = document.createElement('script');
-      script.src = 'https://apis.google.com/js/api.js';
-      script.async = true;
-      script.defer = true;
-      document.head.appendChild(script);
-    }
-  }, []);
-
   const handleConnectAll = async () => {
     try {
       await connectCalendar();

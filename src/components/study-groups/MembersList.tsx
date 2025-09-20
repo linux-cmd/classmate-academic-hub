@@ -22,7 +22,7 @@ import { useToast } from "@/hooks/use-toast";
 import type { Tables } from "@/integrations/supabase/types";
 
 type GroupMember = Tables<"group_members"> & {
-  profiles?: Tables<"profiles">;
+  profiles?: Tables<"profiles"> | null;
 };
 
 interface MembersListProps {
@@ -39,16 +39,37 @@ export function MembersList({ groupId, isAdmin }: MembersListProps) {
 
   const fetchMembers = async () => {
     try {
-      const { data, error } = await supabase
+      // First get group members
+      const { data: membersData, error: membersError } = await supabase
         .from("group_members")
-        .select(`
-          *,
-          profiles(*)
-        `)
+        .select("*")
         .eq("group_id", groupId);
 
-      if (error) throw error;
-      setMembers(data || []);
+      if (membersError) throw membersError;
+
+      if (!membersData || membersData.length === 0) {
+        setMembers([]);
+        return;
+      }
+
+      // Get user IDs to fetch profiles
+      const userIds = membersData.map(member => member.user_id);
+
+      // Fetch profiles for these users
+      const { data: profilesData, error: profilesError } = await supabase
+        .from("profiles")
+        .select("*")
+        .in("user_id", userIds);
+
+      if (profilesError) throw profilesError;
+
+      // Combine members with their profiles
+      const membersWithProfiles = membersData.map(member => ({
+        ...member,
+        profiles: profilesData?.find(profile => profile.user_id === member.user_id) || null
+      }));
+
+      setMembers(membersWithProfiles);
     } catch (error: any) {
       console.error("Failed to fetch members:", error);
       toast({

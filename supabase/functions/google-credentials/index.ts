@@ -14,15 +14,34 @@ serve(async (req) => {
     const googleClientId = Deno.env.get('GOOGLE_CLIENT_ID');
     const googleApiKey = Deno.env.get('GOOGLE_API_KEY');
 
-    if (!googleClientId || !googleApiKey) {
-      throw new Error('Google credentials not configured');
+    console.log('Checking Google credentials:', {
+      hasClientId: !!googleClientId,
+      hasApiKey: !!googleApiKey,
+      clientIdLength: googleClientId?.length || 0,
+      apiKeyLength: googleApiKey?.length || 0
+    });
+
+    if (!googleClientId) {
+      console.error('Missing GOOGLE_CLIENT_ID environment variable');
+      throw new Error('Google Client ID not configured. Please set GOOGLE_CLIENT_ID in Supabase secrets.');
+    }
+
+    if (!googleApiKey) {
+      console.error('Missing GOOGLE_API_KEY environment variable');
+      throw new Error('Google API Key not configured. Please set GOOGLE_API_KEY in Supabase secrets.');
+    }
+
+    if (googleClientId.trim() === '' || googleApiKey.trim() === '') {
+      console.error('Empty Google credentials detected');
+      throw new Error('Google credentials are empty. Please check your Supabase secrets values.');
     }
 
     const credentials = {
-      clientId: googleClientId,
-      apiKey: googleApiKey,
+      clientId: googleClientId.trim(),
+      apiKey: googleApiKey.trim(),
     };
 
+    console.log('Successfully returning Google credentials');
     return new Response(
       JSON.stringify(credentials),
       { 
@@ -33,8 +52,13 @@ serve(async (req) => {
       },
     );
   } catch (error) {
+    console.error('Google credentials error:', error.message);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: error.message,
+        timestamp: new Date().toISOString(),
+        requestMethod: req.method
+      }),
       { 
         headers: { 
           ...corsHeaders, 

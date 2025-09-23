@@ -121,7 +121,14 @@ export const useSocialData = () => {
 
       if (error) throw error;
 
-      setPosts(data || []);
+        setPosts(data.map(post => ({
+          ...post,
+          post_type: post.post_type as any,
+          visibility: post.visibility as any,
+          attachments: post.attachments as any,
+          author: undefined, // Will need to be populated separately if needed
+          user_reaction: post.user_reaction || []
+        } as unknown as Post)) || []);
     } catch (err: any) {
       console.error('Error fetching posts:', err);
       setError(err.message);
@@ -145,7 +152,15 @@ export const useSocialData = () => {
 
       if (error) throw error;
 
-      setCommunities(data || []);
+        setCommunities(data.map(community => ({
+          ...community,
+          owner: {
+            display_name: '',
+            username: '',
+            avatar_url: ''
+          },
+          user_membership: undefined
+        })) || []);
     } catch (err: any) {
       console.error('Error fetching communities:', err);
       setError(err.message);
@@ -278,7 +293,9 @@ export const useSocialData = () => {
           .eq('id', existing.id);
 
         // Update post like count
-        await supabase.rpc('decrement_post_likes', { post_id: postId });
+        const { error: decrementError } = await supabase.rpc('decrement_post_likes' as any, { 
+          post_id: postId 
+        });
       } else {
         // Add reaction
         await supabase
@@ -290,7 +307,9 @@ export const useSocialData = () => {
           }]);
 
         // Update post like count
-        await supabase.rpc('increment_post_likes', { post_id: postId });
+        const { error: incrementError } = await supabase.rpc('increment_post_likes' as any, { 
+          post_id: postId 
+        });
       }
 
       // Refresh posts to show updated counts

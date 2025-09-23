@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Send, Wifi, WifiOff, Lock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-export type GroupMessage = Tables<"group_messages">;
+export type GroupMessage = Tables<"group_chat_messages">;
 export type Profile = Tables<"profiles">;
 export type StudyGroup = Tables<"study_groups">;
 
@@ -34,15 +34,15 @@ export function GroupChat({ group, isMember }: GroupChatProps) {
     if (!isMember) return;
     try {
       const { data, error } = await supabase
-        .from("group_messages")
+        .from("group_chat_messages")
         .select("*")
-        .eq("group_id", group.id)
+        .eq("chat_id", group.id)
         .order("created_at", { ascending: true });
       if (error) throw error;
       setMessages(data || []);
 
       // Fetch distinct author profiles
-      const authorIds = Array.from(new Set((data || []).map((m) => m.user_id)));
+      const authorIds = Array.from(new Set((data || []).map((m) => m.sender_id)));
       if (authorIds.length) {
         const { data: profs, error: pErr } = await supabase
           .from("profiles")
@@ -74,12 +74,12 @@ export function GroupChat({ group, isMember }: GroupChatProps) {
       .channel(`group-messages-${group.id}`)
       .on(
         'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'group_messages', filter: `group_id=eq.${group.id}` },
+        { event: 'INSERT', schema: 'public', table: 'group_chat_messages', filter: `chat_id=eq.${group.id}` },
         async (payload) => {
           const msg = payload.new as GroupMessage;
           setMessages((prev) => [...prev, msg]);
           // Lazy-load profile for new author
-          const uid = msg.user_id as string;
+          const uid = msg.sender_id as string;
           if (!profiles[uid]) {
             const { data: p } = await supabase.from('profiles').select('*').eq('user_id', uid).single();
             if (p) setProfiles((prev) => ({ ...prev, [uid]: p }));
@@ -104,9 +104,9 @@ export function GroupChat({ group, isMember }: GroupChatProps) {
   const handleSend = async () => {
     if (!user || !input.trim() || !isMember) return;
     try {
-      const { error } = await supabase.from('group_messages').insert({
-        group_id: group.id,
-        user_id: user.id,
+      const { error } = await supabase.from('group_chat_messages').insert({
+        chat_id: group.id,
+        sender_id: user.id,
         content: input.trim(),
       });
       if (error) throw error;
@@ -153,8 +153,8 @@ export function GroupChat({ group, isMember }: GroupChatProps) {
               <ScrollArea className="h-full">
                 <div className="space-y-4 pr-2">
                   {messages.map((m) => {
-                    const author = profiles[m.user_id as string];
-                    const mine = user?.id === m.user_id;
+                    const author = profiles[m.sender_id as string];
+                    const mine = user?.id === m.sender_id;
                     return (
                       <div key={m.id} className={`flex items-start gap-3 ${mine ? 'flex-row-reverse text-right' : ''}`}>
                         <Avatar className="size-8 shrink-0">

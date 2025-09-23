@@ -115,7 +115,10 @@ export const useSocialAuth = () => {
         return;
       }
 
-      setProfile(data);
+      setProfile({
+        ...data,
+        links: (data.links as any) || {}
+      } as ExtendedProfile);
     } catch (error) {
       console.error('Error fetching profile:', error);
     }

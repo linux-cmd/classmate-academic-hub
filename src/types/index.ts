@@ -1,3 +1,5 @@
+import type { Tables } from "@/integrations/supabase/types";
+
 export interface Assignment {
   id: string;
   title: string;
@@ -68,3 +70,29 @@ export interface User {
   initials: string;
   gpa: string;
 }
+
+// Social Platform Types
+export type ExtendedProfile = Tables<"profiles"> & {
+  links: Record<string, string>;
+  followers_count?: number;
+  following_count?: number;
+  posts_count?: number;
+};
+
+export type Post = Tables<"posts"> & {
+  author?: {
+    display_name: string;
+    username: string;
+    avatar_url: string;
+  };
+  user_reaction?: any[];
+};
+
+export type Community = Tables<"communities"> & {
+  owner: {
+    display_name: string;
+    username: string;
+    avatar_url: string;
+  };
+  user_membership?: Array<{ role: string }>;
+};

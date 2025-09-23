@@ -266,7 +266,7 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
                   rel="noopener noreferrer"
                   className="text-xs text-blue-500 hover:underline block"
                 >
-                  {platform}: {url}
+                  {platform}: {String(url)}
                 </a>
               ))}
             </div>

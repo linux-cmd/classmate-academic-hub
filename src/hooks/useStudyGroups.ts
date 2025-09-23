@@ -4,7 +4,7 @@ import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import type { Tables } from "@/integrations/supabase/types";
 
 export type StudyGroup = Tables<"study_groups">;
-export type GroupMessage = Tables<"group_messages">;
+export type GroupMessage = Tables<"group_chat_messages">;
 
 export const useStudyGroups = () => {
   const { user } = useSupabaseAuth();

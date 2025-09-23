@@ -433,6 +433,53 @@ export type Database = {
           },
         ]
       }
+      group_chat_messages: {
+        Row: {
+          attachments: Json | null
+          chat_id: string
+          content: string
+          created_at: string
+          edited_at: string | null
+          id: string
+          is_edited: boolean | null
+          message_type: string
+          sender_id: string
+          updated_at: string
+        }
+        Insert: {
+          attachments?: Json | null
+          chat_id: string
+          content: string
+          created_at?: string
+          edited_at?: string | null
+          id?: string
+          is_edited?: boolean | null
+          message_type?: string
+          sender_id: string
+          updated_at?: string
+        }
+        Update: {
+          attachments?: Json | null
+          chat_id?: string
+          content?: string
+          created_at?: string
+          edited_at?: string | null
+          id?: string
+          is_edited?: boolean | null
+          message_type?: string
+          sender_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_chat_messages_chat_id_fkey"
+            columns: ["chat_id"]
+            isOneToOne: false
+            referencedRelation: "group_chats"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       group_chats: {
         Row: {
           avatar_url: string | null
@@ -627,33 +674,6 @@ export type Database = {
             referencedColumns: ["user_id"]
           },
         ]
-      }
-      group_messages: {
-        Row: {
-          attachments: Json | null
-          content: string
-          created_at: string
-          group_id: string
-          id: string
-          user_id: string
-        }
-        Insert: {
-          attachments?: Json | null
-          content: string
-          created_at?: string
-          group_id: string
-          id?: string
-          user_id: string
-        }
-        Update: {
-          attachments?: Json | null
-          content?: string
-          created_at?: string
-          group_id?: string
-          id?: string
-          user_id?: string
-        }
-        Relationships: []
       }
       group_notifications: {
         Row: {

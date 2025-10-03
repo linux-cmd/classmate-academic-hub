@@ -14,6 +14,47 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_jobs: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          error_message: string | null
+          id: string
+          kind: string
+          note_id: string
+          result: Json | null
+          status: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          kind: string
+          note_id: string
+          result?: Json | null
+          status?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          kind?: string
+          note_id?: string
+          result?: Json | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_jobs_note_id_fkey"
+            columns: ["note_id"]
+            isOneToOne: false
+            referencedRelation: "notes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       assignments: {
         Row: {
           created_at: string
@@ -355,6 +396,136 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      flashcard_decks: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          note_id: string | null
+          owner_id: string
+          shared: string | null
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          note_id?: string | null
+          owner_id: string
+          shared?: string | null
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          note_id?: string | null
+          owner_id?: string
+          shared?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flashcard_decks_note_id_fkey"
+            columns: ["note_id"]
+            isOneToOne: false
+            referencedRelation: "notes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      flashcard_reviews: {
+        Row: {
+          algorithm_state: Json | null
+          card_id: string
+          created_at: string
+          due_at: string
+          ease: number | null
+          id: string
+          interval_days: number | null
+          last_review_at: string | null
+          user_id: string
+        }
+        Insert: {
+          algorithm_state?: Json | null
+          card_id: string
+          created_at?: string
+          due_at?: string
+          ease?: number | null
+          id?: string
+          interval_days?: number | null
+          last_review_at?: string | null
+          user_id: string
+        }
+        Update: {
+          algorithm_state?: Json | null
+          card_id?: string
+          created_at?: string
+          due_at?: string
+          ease?: number | null
+          id?: string
+          interval_days?: number | null
+          last_review_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flashcard_reviews_card_id_fkey"
+            columns: ["card_id"]
+            isOneToOne: false
+            referencedRelation: "flashcards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      flashcards: {
+        Row: {
+          back: string
+          cloze: Json | null
+          created_at: string
+          deck_id: string
+          front: string
+          id: string
+          note_id: string | null
+          sort_order: number | null
+        }
+        Insert: {
+          back: string
+          cloze?: Json | null
+          created_at?: string
+          deck_id: string
+          front: string
+          id?: string
+          note_id?: string | null
+          sort_order?: number | null
+        }
+        Update: {
+          back?: string
+          cloze?: Json | null
+          created_at?: string
+          deck_id?: string
+          front?: string
+          id?: string
+          note_id?: string | null
+          sort_order?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flashcards_deck_id_fkey"
+            columns: ["deck_id"]
+            isOneToOne: false
+            referencedRelation: "flashcard_decks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "flashcards_note_id_fkey"
+            columns: ["note_id"]
+            isOneToOne: false
+            referencedRelation: "notes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       grades: {
         Row: {
@@ -753,41 +924,475 @@ export type Database = {
         }
         Relationships: []
       }
+      note_activity_log: {
+        Row: {
+          action: string
+          created_at: string
+          entity: string
+          entity_id: string
+          id: string
+          meta: Json | null
+          user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          entity: string
+          entity_id: string
+          id?: string
+          meta?: Json | null
+          user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          entity?: string
+          entity_id?: string
+          id?: string
+          meta?: Json | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      note_assets: {
+        Row: {
+          created_at: string
+          file_name: string | null
+          file_path: string
+          file_size: number | null
+          id: string
+          meta: Json | null
+          mime_type: string | null
+          note_id: string
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          file_name?: string | null
+          file_path: string
+          file_size?: number | null
+          id?: string
+          meta?: Json | null
+          mime_type?: string | null
+          note_id: string
+          type: string
+        }
+        Update: {
+          created_at?: string
+          file_name?: string | null
+          file_path?: string
+          file_size?: number | null
+          id?: string
+          meta?: Json | null
+          mime_type?: string | null
+          note_id?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "note_assets_note_id_fkey"
+            columns: ["note_id"]
+            isOneToOne: false
+            referencedRelation: "notes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      note_comments: {
+        Row: {
+          author_id: string
+          block_ref: string | null
+          content: string
+          created_at: string
+          id: string
+          note_id: string
+          resolved: boolean | null
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          block_ref?: string | null
+          content: string
+          created_at?: string
+          id?: string
+          note_id: string
+          resolved?: boolean | null
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          block_ref?: string | null
+          content?: string
+          created_at?: string
+          id?: string
+          note_id?: string
+          resolved?: boolean | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "note_comments_note_id_fkey"
+            columns: ["note_id"]
+            isOneToOne: false
+            referencedRelation: "notes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      note_embeddings: {
+        Row: {
+          chunk_index: number
+          content: string
+          id: string
+          note_id: string
+          vector: number[] | null
+        }
+        Insert: {
+          chunk_index: number
+          content: string
+          id?: string
+          note_id: string
+          vector?: number[] | null
+        }
+        Update: {
+          chunk_index?: number
+          content?: string
+          id?: string
+          note_id?: string
+          vector?: number[] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "note_embeddings_note_id_fkey"
+            columns: ["note_id"]
+            isOneToOne: false
+            referencedRelation: "notes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      note_links: {
+        Row: {
+          created_at: string
+          from_note_id: string
+          id: string
+          to_note_id: string
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          from_note_id: string
+          id?: string
+          to_note_id: string
+          type?: string
+        }
+        Update: {
+          created_at?: string
+          from_note_id?: string
+          id?: string
+          to_note_id?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "note_links_from_note_id_fkey"
+            columns: ["from_note_id"]
+            isOneToOne: false
+            referencedRelation: "notes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "note_links_to_note_id_fkey"
+            columns: ["to_note_id"]
+            isOneToOne: false
+            referencedRelation: "notes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      note_shares: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          link_token: string | null
+          note_id: string
+          password_hash: string | null
+          role: string
+          target_user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          link_token?: string | null
+          note_id: string
+          password_hash?: string | null
+          role?: string
+          target_user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          link_token?: string | null
+          note_id?: string
+          password_hash?: string | null
+          role?: string
+          target_user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "note_shares_note_id_fkey"
+            columns: ["note_id"]
+            isOneToOne: false
+            referencedRelation: "notes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      note_tag_associations: {
+        Row: {
+          note_id: string
+          tag_id: string
+        }
+        Insert: {
+          note_id: string
+          tag_id: string
+        }
+        Update: {
+          note_id?: string
+          tag_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "note_tag_associations_note_id_fkey"
+            columns: ["note_id"]
+            isOneToOne: false
+            referencedRelation: "notes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "note_tag_associations_tag_id_fkey"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "note_tags_lookup"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      note_tags_lookup: {
+        Row: {
+          color: string | null
+          created_at: string
+          id: string
+          name: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          id?: string
+          name: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      note_tasks: {
+        Row: {
+          assignee_id: string | null
+          block_ref: string | null
+          created_at: string
+          due_at: string | null
+          id: string
+          note_id: string
+          priority: string | null
+          status: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          assignee_id?: string | null
+          block_ref?: string | null
+          created_at?: string
+          due_at?: string | null
+          id?: string
+          note_id: string
+          priority?: string | null
+          status?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          assignee_id?: string | null
+          block_ref?: string | null
+          created_at?: string
+          due_at?: string | null
+          id?: string
+          note_id?: string
+          priority?: string | null
+          status?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "note_tasks_note_id_fkey"
+            columns: ["note_id"]
+            isOneToOne: false
+            referencedRelation: "notes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      note_versions: {
+        Row: {
+          change_summary: string | null
+          changed_by: string
+          content: string | null
+          content_blocks: Json | null
+          created_at: string
+          id: string
+          note_id: string
+          title: string
+          version: number
+        }
+        Insert: {
+          change_summary?: string | null
+          changed_by: string
+          content?: string | null
+          content_blocks?: Json | null
+          created_at?: string
+          id?: string
+          note_id: string
+          title: string
+          version: number
+        }
+        Update: {
+          change_summary?: string | null
+          changed_by?: string
+          content?: string | null
+          content_blocks?: Json | null
+          created_at?: string
+          id?: string
+          note_id?: string
+          title?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "note_versions_note_id_fkey"
+            columns: ["note_id"]
+            isOneToOne: false
+            referencedRelation: "notes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notebooks: {
+        Row: {
+          archived_at: string | null
+          created_at: string
+          description: string | null
+          id: string
+          owner_id: string
+          sort_order: number | null
+          title: string
+          updated_at: string
+          visibility: string
+        }
+        Insert: {
+          archived_at?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          owner_id: string
+          sort_order?: number | null
+          title: string
+          updated_at?: string
+          visibility?: string
+        }
+        Update: {
+          archived_at?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          owner_id?: string
+          sort_order?: number | null
+          title?: string
+          updated_at?: string
+          visibility?: string
+        }
+        Relationships: []
+      }
       notes: {
         Row: {
           content: string | null
+          content_blocks: Json | null
+          cover_url: string | null
           created_at: string
           folder: string | null
           id: string
           is_favorite: boolean | null
+          is_public: boolean | null
+          notebook_id: string | null
+          published_slug: string | null
+          status: string | null
           tags: string[] | null
           title: string
           updated_at: string
           user_id: string
+          version: number | null
         }
         Insert: {
           content?: string | null
+          content_blocks?: Json | null
+          cover_url?: string | null
           created_at?: string
           folder?: string | null
           id?: string
           is_favorite?: boolean | null
+          is_public?: boolean | null
+          notebook_id?: string | null
+          published_slug?: string | null
+          status?: string | null
           tags?: string[] | null
           title?: string
           updated_at?: string
           user_id: string
+          version?: number | null
         }
         Update: {
           content?: string | null
+          content_blocks?: Json | null
+          cover_url?: string | null
           created_at?: string
           folder?: string | null
           id?: string
           is_favorite?: boolean | null
+          is_public?: boolean | null
+          notebook_id?: string | null
+          published_slug?: string | null
+          status?: string | null
           tags?: string[] | null
           title?: string
           updated_at?: string
           user_id?: string
+          version?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "notes_notebook_id_fkey"
+            columns: ["notebook_id"]
+            isOneToOne: false
+            referencedRelation: "notebooks"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       notifications: {
         Row: {
@@ -1024,6 +1629,47 @@ export type Database = {
           username?: string | null
         }
         Relationships: []
+      }
+      public_pages: {
+        Row: {
+          created_at: string
+          enabled: boolean | null
+          id: string
+          note_id: string
+          password_hash: string | null
+          seo_description: string | null
+          seo_title: string | null
+          slug: string
+        }
+        Insert: {
+          created_at?: string
+          enabled?: boolean | null
+          id?: string
+          note_id: string
+          password_hash?: string | null
+          seo_description?: string | null
+          seo_title?: string | null
+          slug: string
+        }
+        Update: {
+          created_at?: string
+          enabled?: boolean | null
+          id?: string
+          note_id?: string
+          password_hash?: string | null
+          seo_description?: string | null
+          seo_title?: string | null
+          slug?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_pages_note_id_fkey"
+            columns: ["note_id"]
+            isOneToOne: false
+            referencedRelation: "notes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       reports: {
         Row: {

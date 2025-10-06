@@ -3,12 +3,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, Search, Star, Calendar, Edit3, Trash2, Share2, FileText } from "lucide-react";
+import { Plus, Search, Star, Calendar, Edit3, Trash2, Share2, FileText, MessageSquare, History, FileCode } from "lucide-react";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useNotes } from "@/hooks/useNotes";
+import { useRealtimeNote } from "@/hooks/useRealtimeNote";
+import { useTemplates } from "@/hooks/useTemplates";
 import { BlockEditor, type Block } from "@/components/notes/BlockEditor";
 import { NotebookSidebar } from "@/components/notes/NotebookSidebar";
 import { ShareDialog } from "@/components/notes/ShareDialog";
+import { PresenceAvatars } from "@/components/notes/PresenceAvatars";
+import { CommentsSidebar } from "@/components/notes/CommentsSidebar";
+import { VersionHistoryModal } from "@/components/notes/VersionHistoryModal";
+import { TemplatePickerModal } from "@/components/notes/TemplatePickerModal";
 import type { Note } from "@/hooks/useNotes";
 
 const Notes = () => {
@@ -33,6 +39,18 @@ const Notes = () => {
   const [newNoteTitle, setNewNoteTitle] = useState("");
   const [showNewNoteDialog, setShowNewNoteDialog] = useState(false);
   const [showShareDialog, setShowShareDialog] = useState(false);
+  const [showCommentsSidebar, setShowCommentsSidebar] = useState(false);
+  const [showVersionHistory, setShowVersionHistory] = useState(false);
+  const [showTemplatePicker, setShowTemplatePicker] = useState(false);
+  
+  // Phase 2: Real-time collaboration
+  const { presenceUsers, isConnected, broadcastPresence } = useRealtimeNote(
+    selectedNote?.id || null,
+    user?.id || null
+  );
+  
+  // Templates
+  const { createTemplate } = useTemplates();
 
   const handleCreateNote = async () => {
     if (!newNoteTitle.trim()) return;
@@ -55,6 +73,27 @@ const Notes = () => {
     };
     
     setSelectedNote(updatedNote);
+    broadcastPresence(); // Broadcast presence on edit
+  };
+  
+  const handleInsertTemplate = (blocks: Block[]) => {
+    if (!selectedNote) return;
+    
+    const updatedBlocks = [...selectedNote.content_blocks, ...blocks];
+    handleUpdateBlocks(updatedBlocks);
+  };
+  
+  const handleSaveAsTemplate = async () => {
+    if (!selectedNote) return;
+    
+    await createTemplate(
+      selectedNote.title,
+      selectedNote.content_blocks,
+      {
+        description: `Template from ${selectedNote.title}`,
+        isPublic: false,
+      }
+    );
   };
 
   const handleSaveNote = async () => {
@@ -206,7 +245,8 @@ const Notes = () => {
           </div>
 
           {/* Note Editor */}
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto flex">
+            <div className="flex-1">
             {selectedNote ? (
               <div className="container mx-auto max-w-4xl p-8">
                 {/* Note Header */}
@@ -226,11 +266,42 @@ const Notes = () => {
                     )}
                     
                     <div className="flex items-center space-x-2">
+                      {/* Presence Avatars */}
+                      <PresenceAvatars users={presenceUsers} isConnected={isConnected} />
+                      
                       {isEditing && (
                         <Button onClick={handleSaveNote}>
                           Save
                         </Button>
                       )}
+                      
+                      {/* Comments */}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setShowCommentsSidebar(!showCommentsSidebar)}
+                      >
+                        <MessageSquare className="w-4 h-4" />
+                      </Button>
+                      
+                      {/* Version History */}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setShowVersionHistory(true)}
+                      >
+                        <History className="w-4 h-4" />
+                      </Button>
+                      
+                      {/* Templates */}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setShowTemplatePicker(true)}
+                      >
+                        <FileCode className="w-4 h-4" />
+                      </Button>
+                      
                       <Button
                         variant="ghost"
                         size="icon"
@@ -297,17 +368,44 @@ const Notes = () => {
                 </div>
               </div>
             )}
+            </div>
+            
+            {/* Comments Sidebar */}
+            {showCommentsSidebar && selectedNote && (
+              <CommentsSidebar
+                noteId={selectedNote.id}
+                onClose={() => setShowCommentsSidebar(false)}
+              />
+            )}
           </div>
         </div>
       </div>
 
-      {/* Share Dialog */}
+      {/* Dialogs */}
       {selectedNote && (
-        <ShareDialog
-          noteId={selectedNote.id}
-          isOpen={showShareDialog}
-          onClose={() => setShowShareDialog(false)}
-        />
+        <>
+          <ShareDialog
+            noteId={selectedNote.id}
+            isOpen={showShareDialog}
+            onClose={() => setShowShareDialog(false)}
+          />
+          
+          <VersionHistoryModal
+            noteId={selectedNote.id}
+            open={showVersionHistory}
+            onOpenChange={setShowVersionHistory}
+            onRestore={() => {
+              // Refresh the note after restore
+              window.location.reload();
+            }}
+          />
+          
+          <TemplatePickerModal
+            open={showTemplatePicker}
+            onOpenChange={setShowTemplatePicker}
+            onSelectTemplate={handleInsertTemplate}
+          />
+        </>
       )}
     </div>
   );

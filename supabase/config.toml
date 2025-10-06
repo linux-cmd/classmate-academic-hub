@@ -1,1 +1,10 @@
 project_id = "ztqatzdqkocgdlfjgusw"
+
+[functions.realtime-presence]
+verify_jwt = true
+
+[functions.notify-mentions]
+verify_jwt = true
+
+[functions.auto-snapshot]
+verify_jwt = false

@@ -1006,6 +1006,7 @@ export type Database = {
           created_at: string
           id: string
           note_id: string
+          parent_id: string | null
           resolved: boolean | null
           updated_at: string
         }
@@ -1016,6 +1017,7 @@ export type Database = {
           created_at?: string
           id?: string
           note_id: string
+          parent_id?: string | null
           resolved?: boolean | null
           updated_at?: string
         }
@@ -1026,6 +1028,7 @@ export type Database = {
           created_at?: string
           id?: string
           note_id?: string
+          parent_id?: string | null
           resolved?: boolean | null
           updated_at?: string
         }
@@ -1035,6 +1038,13 @@ export type Database = {
             columns: ["note_id"]
             isOneToOne: false
             referencedRelation: "notes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "note_comments_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "note_comments"
             referencedColumns: ["id"]
           },
         ]
@@ -1761,6 +1771,51 @@ export type Database = {
           owner_id?: string
           subject?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      templates: {
+        Row: {
+          category: string | null
+          content_blocks: Json
+          created_at: string
+          description: string | null
+          id: string
+          is_public: boolean | null
+          owner_id: string
+          preview_url: string | null
+          tags: string[] | null
+          title: string
+          updated_at: string
+          usage_count: number | null
+        }
+        Insert: {
+          category?: string | null
+          content_blocks?: Json
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          owner_id: string
+          preview_url?: string | null
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+          usage_count?: number | null
+        }
+        Update: {
+          category?: string | null
+          content_blocks?: Json
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          owner_id?: string
+          preview_url?: string | null
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+          usage_count?: number | null
         }
         Relationships: []
       }

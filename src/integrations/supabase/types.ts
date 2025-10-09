@@ -366,6 +366,7 @@ export type Database = {
           event_type: string | null
           id: string
           location: string | null
+          source: string | null
           start_time: string
           title: string
           updated_at: string
@@ -378,6 +379,7 @@ export type Database = {
           event_type?: string | null
           id?: string
           location?: string | null
+          source?: string | null
           start_time: string
           title: string
           updated_at?: string
@@ -390,6 +392,7 @@ export type Database = {
           event_type?: string | null
           id?: string
           location?: string | null
+          source?: string | null
           start_time?: string
           title?: string
           updated_at?: string
@@ -526,6 +529,114 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      google_calendars: {
+        Row: {
+          created_at: string | null
+          gcal_id: string
+          id: string
+          selected: boolean | null
+          summary: string | null
+          sync_token: string | null
+          time_zone: string | null
+          updated_at: string | null
+          user_id: string | null
+          watch_channel_id: string | null
+          watch_expiration: string | null
+          watch_resource_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          gcal_id: string
+          id?: string
+          selected?: boolean | null
+          summary?: string | null
+          sync_token?: string | null
+          time_zone?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          watch_channel_id?: string | null
+          watch_expiration?: string | null
+          watch_resource_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          gcal_id?: string
+          id?: string
+          selected?: boolean | null
+          summary?: string | null
+          sync_token?: string | null
+          time_zone?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          watch_channel_id?: string | null
+          watch_expiration?: string | null
+          watch_resource_id?: string | null
+        }
+        Relationships: []
+      }
+      google_event_links: {
+        Row: {
+          etag: string | null
+          gcal_event_id: string
+          gcal_id: string
+          id: string
+          last_synced_at: string | null
+          local_event_id: string
+          user_id: string | null
+        }
+        Insert: {
+          etag?: string | null
+          gcal_event_id: string
+          gcal_id: string
+          id?: string
+          last_synced_at?: string | null
+          local_event_id: string
+          user_id?: string | null
+        }
+        Update: {
+          etag?: string | null
+          gcal_event_id?: string
+          gcal_id?: string
+          id?: string
+          last_synced_at?: string | null
+          local_event_id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      google_tokens: {
+        Row: {
+          access_token: string
+          created_at: string | null
+          expires_at: string
+          refresh_token: string
+          scope: string
+          token_type: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          access_token: string
+          created_at?: string | null
+          expires_at: string
+          refresh_token: string
+          scope: string
+          token_type: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          access_token?: string
+          created_at?: string | null
+          expires_at?: string
+          refresh_token?: string
+          scope?: string
+          token_type?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       grades: {
         Row: {

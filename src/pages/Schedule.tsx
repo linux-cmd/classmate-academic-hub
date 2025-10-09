@@ -5,11 +5,14 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Calendar, Clock, MapPin, Users, ChevronLeft, ChevronRight, Plus } from "lucide-react";
-import CalendarIntegration from "@/components/CalendarIntegration";
+import { Calendar, Clock, MapPin, Users, ChevronLeft, ChevronRight, Plus, Link, RefreshCw } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { toast } from "@/hooks/use-toast";
+import { useGoogleCalendarIntegration } from "@/hooks/useGoogleCalendarIntegration";
 
 interface ScheduleEvent {
   id: string;
@@ -31,6 +34,7 @@ const Schedule = () => {
   const [events, setEvents] = useState<ScheduleEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddDialog, setShowAddDialog] = useState(false);
+  const [showLocalEvents, setShowLocalEvents] = useState(true);
   const [newEvent, setNewEvent] = useState({
     title: '',
     start_time: '',
@@ -40,6 +44,17 @@ const Schedule = () => {
     description: ''
   });
 
+  const {
+    isConnected: isGoogleConnected,
+    isLoading: isGoogleLoading,
+    calendars: googleCalendars,
+    connect: connectGoogle,
+    disconnect: disconnectGoogle,
+    toggleCalendar,
+    handleCallback,
+    syncCalendar,
+  } = useGoogleCalendarIntegration();
+
   useEffect(() => {
     if (user) {
       fetchEvents();
@@ -47,6 +62,18 @@ const Schedule = () => {
       setLoading(false);
     }
   }, [user]);
+
+  // Handle OAuth callback
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    const state = urlParams.get('state');
+
+    if (code && state) {
+      handleCallback(code, state);
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, [handleCallback]);
 
   const fetchEvents = async () => {
     try {
@@ -402,11 +429,115 @@ const Schedule = () => {
 
           {/* Sidebar - Calendar Integration */}
           <div className="space-y-6">
-            <CalendarIntegration
-              onSyncCalendar={() => {
-                console.log('Calendar sync triggered');
-              }}
-            />
+            {/* Google Calendar Integration */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Calendar className="w-5 h-5 text-primary" />
+                  Google Calendar
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {!isGoogleConnected ? (
+                  <div className="text-center space-y-3">
+                    <p className="text-sm text-muted-foreground">
+                      Connect your Google Calendar to sync events
+                    </p>
+                    <Button 
+                      onClick={connectGoogle} 
+                      disabled={isGoogleLoading}
+                      className="w-full"
+                    >
+                      {isGoogleLoading ? (
+                        <>
+                          <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                          Connecting...
+                        </>
+                      ) : (
+                        <>
+                          <Link className="w-4 h-4 mr-2" />
+                          Connect Google Calendar
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-green-500" />
+                        <span className="text-sm font-medium">Connected</span>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={disconnectGoogle}
+                        disabled={isGoogleLoading}
+                      >
+                        Disconnect
+                      </Button>
+                    </div>
+
+                    <Separator />
+
+                    {/* Calendar Filters */}
+                    <div className="space-y-3">
+                      <Label className="text-sm font-medium">Event Sources</Label>
+                      
+                      <div className="flex items-center justify-between">
+                        <Label htmlFor="local-events" className="text-sm cursor-pointer">
+                          Local Events
+                        </Label>
+                        <Switch
+                          id="local-events"
+                          checked={showLocalEvents}
+                          onCheckedChange={setShowLocalEvents}
+                        />
+                      </div>
+
+                      {googleCalendars.map((cal) => (
+                        <div key={cal.id} className="flex items-center justify-between">
+                          <div className="flex-1 min-w-0">
+                            <Label 
+                              htmlFor={`cal-${cal.gcal_id}`}
+                              className="text-sm cursor-pointer truncate block"
+                            >
+                              {cal.summary}
+                            </Label>
+                          </div>
+                          <Switch
+                            id={`cal-${cal.gcal_id}`}
+                            checked={cal.selected}
+                            onCheckedChange={(checked) =>
+                              toggleCalendar(cal.gcal_id, checked)
+                            }
+                          />
+                        </div>
+                      ))}
+                    </div>
+
+                    {googleCalendars.length > 0 && (
+                      <>
+                        <Separator />
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full"
+                          onClick={() => {
+                            googleCalendars.forEach(cal => {
+                              if (cal.selected) syncCalendar(cal.gcal_id);
+                            });
+                          }}
+                        >
+                          <RefreshCw className="w-4 h-4 mr-2" />
+                          Sync All Calendars
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
 
             {/* Quick Stats */}
             <Card>

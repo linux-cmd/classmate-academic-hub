@@ -8,3 +8,24 @@ verify_jwt = true
 
 [functions.auto-snapshot]
 verify_jwt = false
+
+[functions.google-status]
+verify_jwt = true
+
+[functions.google-connect]
+verify_jwt = true
+
+[functions.google-disconnect]
+verify_jwt = true
+
+[functions.google-calendars]
+verify_jwt = true
+
+[functions.google-events]
+verify_jwt = true
+
+[functions.google-sync]
+verify_jwt = true
+
+[functions.google-webhook]
+verify_jwt = false

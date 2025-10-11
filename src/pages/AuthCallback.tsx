@@ -52,7 +52,7 @@ export default function AuthCallback() {
     
     setStatus('exchanging');
     
-    supabase.auth.exchangeCodeForSession(code)
+    supabase.auth.exchangeCodeForSession(code!)
       .then(({ data, error }) => {
         if (error) {
           console.error('exchangeCodeForSession error:', error);
@@ -65,7 +65,7 @@ export default function AuthCallback() {
         setStatus('success');
         
         // Get redirect target
-        const next = qp.get('next') || '/';
+        const next = qp.get('next') || '/schedule';
         
         // Clean redirect and navigate
         setTimeout(() => {

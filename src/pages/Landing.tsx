@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -24,6 +24,20 @@ import AuthDialog from "@/components/AuthDialog";
 const Landing = () => {
   const { isAuthenticated, signIn, signUp, signInWithGoogle } = useSupabaseAuth();
   const [showAuthDialog, setShowAuthDialog] = useState(false);
+
+  // Clean up OAuth error params from URL
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const hasError = url.searchParams.has('error') || 
+                     url.searchParams.has('error_code') ||
+                     url.hash.includes('error=');
+    
+    if (hasError) {
+      console.log('Cleaning OAuth error from URL');
+      // Clean URL without reloading
+      window.history.replaceState({}, document.title, '/');
+    }
+  }, []);
 
   const features = [
     {

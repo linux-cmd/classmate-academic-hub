@@ -210,7 +210,8 @@ export const useSocialAuth = () => {
   const signInWithGoogle = async () => {
     try {
       console.log('Starting Google sign in...');
-      const redirectUrl = `${window.location.origin}/`;
+      const baseUrl = window.location.origin;
+      const redirectUrl = `${baseUrl}/auth/callback`;
       
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -219,7 +220,8 @@ export const useSocialAuth = () => {
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',
-          }
+          },
+          skipBrowserRedirect: false
         }
       });
 
@@ -228,13 +230,13 @@ export const useSocialAuth = () => {
         throw error;
       }
 
-      console.log('Google sign in initiated with redirect:', redirectUrl, data);
+      console.log('Google sign in initiated, redirecting to:', redirectUrl);
       return { data, error: null };
     } catch (error: any) {
       console.error('Google sign in failed:', error);
       toast({
         title: "Google Sign-In Error",
-        description: "Please check your Google OAuth configuration in Supabase settings.",
+        description: error.message || "Please check your Google OAuth configuration.",
         variant: "destructive",
       });
       return { data: null, error };

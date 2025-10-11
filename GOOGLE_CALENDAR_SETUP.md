@@ -1,7 +1,9 @@
-# Google Calendar Integration Setup Guide
+# Google OAuth & Calendar Integration Setup Guide
 
 ## Overview
-This guide will help you set up complete Google Calendar integration with OAuth 2.0, event sync, webhooks, and real-time updates.
+This guide will help you set up complete Google Calendar integration with OAuth 2.0 authentication, event sync, webhooks, and real-time updates.
+
+⚠️ **CRITICAL:** Follow OAuth configuration steps exactly to avoid "Unable to exchange external code" errors.
 
 ## Prerequisites
 - A Google Cloud Console account
@@ -39,6 +41,9 @@ This guide will help you set up complete Google Calendar integration with OAuth 
 6. Save and continue
 
 ### Step 4: Create OAuth 2.0 Client ID
+
+⚠️ **CRITICAL FOR GOOGLE SIGN-IN:** These settings must match exactly or authentication will fail.
+
 1. Go to **APIs & Services** > **Credentials**
 2. Click **Create Credentials** > **OAuth Client ID**
 3. Application type: **Web application**
@@ -46,30 +51,70 @@ This guide will help you set up complete Google Calendar integration with OAuth 
 5. **Authorized JavaScript origins**:
    ```
    https://classmateapp.vercel.app
-   https://ztqatzdqkocgdlfjgusw.supabase.co
    ```
-6. **Authorized redirect URIs**:
+   ⚠️ **Important:** Do NOT include `www.`, `http://`, or localhost unless testing locally.
+
+6. **Authorized redirect URIs** (add both):
    ```
    https://classmateapp.vercel.app/auth/callback
    https://ztqatzdqkocgdlfjgusw.supabase.co/auth/v1/callback
    ```
+   ⚠️ **Critical:** 
+   - First URI is for your app's callback page (`/auth/callback`)
+   - Second URI is for Supabase Auth to exchange the authorization code
+   - Do NOT use `/auth/v1/callback` for your app - that's for Supabase only
+
 7. Click **Create**
 8. **IMPORTANT**: Copy the Client ID and Client Secret - you'll need these!
 
-## 2. Environment Variables Setup
+## 2. Supabase Auth Configuration
 
-### Supabase Edge Function Secrets
-These secrets have been created in your Supabase project. You need to set their values:
+### Step 2.1: Configure Site URL and Redirect URLs
 
-1. **GOOGLE_CLIENT_ID**: Your OAuth 2.0 Client ID from Step 4
-2. **GOOGLE_CLIENT_SECRET**: Your OAuth 2.0 Client Secret from Step 4
+⚠️ **CRITICAL:** Incorrect Site URL is the #1 cause of "Unable to exchange external code" errors.
+
+1. Go to [Supabase Dashboard](https://supabase.com/dashboard/project/ztqatzdqkocgdlfjgusw)
+2. Navigate to **Authentication** > **URL Configuration**
+3. Set the following:
+
+   **Site URL:**
+   ```
+   https://classmateapp.vercel.app
+   ```
+   ⚠️ **No trailing slash!**
+
+   **Redirect URLs** (add these individually):
+   ```
+   https://classmateapp.vercel.app/auth/callback
+   https://classmateapp.vercel.app/**
+   ```
+   
+   The wildcard `/**` allows Supabase to redirect to any page if needed.
+
+4. Click **Save**
+
+### Step 2.2: Enable Google OAuth Provider
+
+1. In Supabase Dashboard, go to **Authentication** > **Providers**
+2. Find **Google** and click to expand
+3. **Enable** the provider
+4. Enter your **Client ID** and **Client Secret** from Google Cloud Console (Step 4)
+5. Click **Save**
+
+### Step 2.3: Edge Function Secrets
+These secrets have been created in your Supabase project. Set their values:
+
+1. **GOOGLE_CLIENT_ID**: Your OAuth 2.0 Client ID from Step 1.4
+2. **GOOGLE_CLIENT_SECRET**: Your OAuth 2.0 Client Secret from Step 1.4
 3. **GOOGLE_REDIRECT_URI**: `https://classmateapp.vercel.app/auth/callback`
+
+⚠️ **Note:** `GOOGLE_REDIRECT_URI` should be your app's callback page, NOT Supabase's `/auth/v1/callback`.
 
 To set these secrets:
 1. Go to [Supabase Dashboard](https://supabase.com/dashboard/project/ztqatzdqkocgdlfjgusw/settings/functions)
-2. Click on **Edge Functions** in the sidebar
+2. Click **Edge Functions** in the sidebar
 3. Go to **Secrets** tab
-4. Add/update each secret with the values from Google Cloud Console
+4. Add/update each secret
 
 ### Optional: Environment Variables for Development
 Create a `.env.local` file (not committed to git):
@@ -121,11 +166,100 @@ For push notifications via webhooks:
 
 ## 6. Troubleshooting
 
-### "Unauthorized" Error
-- Check that GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET are set correctly
-- Verify redirect URIs match exactly (including https://)
+### Issue: "Unable to exchange external code" Error
 
-### "Access Denied" Error
+⚠️ **This is the most common Google OAuth error.** Follow this detailed checklist:
+**Root Causes & Solutions:**
+
+#### 1. Redirect URI Mismatch
+✅ **Google Cloud Console** → **Credentials** → **OAuth 2.0 Client** → **Authorized redirect URIs** must include:
+- `https://classmateapp.vercel.app/auth/callback` (your app's callback)
+- `https://ztqatzdqkocgdlfjgusw.supabase.co/auth/v1/callback` (Supabase Auth)
+
+❌ **Common mistakes:**
+- Using `/auth/v1/callback` for your app (should be `/auth/callback`)
+- Including `www.` subdomain when app doesn't use it
+- Missing `https://` or using `http://`
+- Trailing slashes or inconsistent formatting
+
+#### 2. Supabase Site URL Incorrect
+✅ **Supabase Dashboard** → **Auth** → **URL Configuration**:
+- **Site URL:** `https://classmateapp.vercel.app` (no trailing slash)
+- **Redirect URLs:** Include `https://classmateapp.vercel.app/auth/callback`
+
+❌ **Common mistakes:**
+- Using localhost or development URLs in production
+- Mismatched domains between Site URL and actual deployment
+- Including `/auth/v1/callback` instead of `/auth/callback`
+
+#### 3. PKCE Code Verifier Mismatch
+✅ **Ensure Supabase client has proper config:**
+```typescript
+{
+  auth: {
+    detectSessionInUrl: true,  // Critical!
+    flowType: 'pkce',           // Critical!
+    persistSession: true,
+    autoRefreshToken: true
+  }
+}
+```
+
+❌ **Common mistakes:**
+- Not setting `detectSessionInUrl: true`
+- Multiple tabs initiating login simultaneously
+- Different `VITE_SUPABASE_URL` between dev and prod
+- Multiple Supabase client instances with different configs
+
+#### 4. Third-Party Cookies Blocked
+✅ **Best practices:**
+- Use a single domain (no cross-origin redirects)
+- Ensure `persistSession: true` in Supabase client
+- Test in incognito/private mode
+
+❌ **Common mistakes:**
+- Mixing `www.` and non-`www.` URLs
+- Browser blocking third-party cookies
+- Cross-subdomain authentication attempts
+
+#### 5. Double-Encoded Error Parameters
+The error URL shows `%253A` (double-encoded `:`) instead of `:`.
+
+✅ **Solution:** Decode error params only once:
+```typescript
+const errorDesc = qp.get('error_description');
+const decoded = errorDesc ? decodeURIComponent(errorDesc.replace(/\+/g, ' ')) : '';
+```
+
+❌ **Common mistake:** Multiple `decodeURIComponent()` calls
+
+#### 6. OAuth Consent Screen Not Published
+If you're in testing mode with limited test users:
+
+✅ Go to **Google Cloud Console** → **OAuth consent screen**:
+- Ensure your email is added to test users OR
+- Publish the app to production (if ready)
+
+---
+
+### Quick Fix Steps:
+
+1. ✅ **Verify all URIs in Google Cloud Console** (Section 1.4)
+2. ✅ **Verify Supabase Site URL and Redirect URLs** (Section 2.1)
+3. ✅ **Check Supabase client has `detectSessionInUrl: true`** (see code above)
+4. ✅ **Clear browser cache and cookies**
+5. ✅ **Test in incognito mode**
+6. ✅ **Check browser console** for detailed error messages
+7. ✅ **Check Edge Function logs** in Supabase Dashboard
+
+---
+
+### Other Common Errors
+
+#### "Unauthorized" Error
+
+- Check that `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` are set correctly in Supabase secrets
+- Verify redirect URIs in Google Cloud Console match exactly (including `https://`)
 - Check OAuth consent screen is configured
 - Verify scopes are added correctly
 - Make sure user has granted permissions
